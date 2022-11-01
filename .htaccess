@@ -1,0 +1,62 @@
+RewriteEngine On
+RewriteCond %{HTTPS} off
+
+RewriteCond %{REMOTE_ADDR} !=127.0.0.1
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R,L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule ^admin-cpanel$ page_router/admincpanel.php [NC,QSA]
+RewriteRule ^admin-cpanel/(.*)$  page_router/admincpanel.php?page=$1 [NC,QSA]
+RewriteRule ^admincpanel$  page_router/admincpanel.php [NC,QSA]
+RewriteRule ^admincpanel/(.*)$  page_router/admincpanel.php?page=$1 [NC,QSA]
+RewriteRule ^adminPages/(.*)$ admin-panel/$1 [L]
+
+
+RewriteRule ^welcome(.*)$ index.php?link1=welcome [QSA,L]
+RewriteRule ^$ index.php?link1=welcome [QSA]
+RewriteRule ^home$ index.php?link1=home [QSA]
+RewriteRule ^logout(/?|)$ index.php?link1=logout [QSA]
+RewriteRule ^register(/?|)$ index.php?link1=register [QSA,L]
+RewriteRule ^login(/?|)$ index.php?link1=login [QSA,L]
+RewriteRule ^contact-us(/?|)$ index.php?link1=contact-us [QSA,L]
+RewriteRule ^user-activation(/?|)$ index.php?link1=user-activation [QSA,L]
+RewriteRule ^404$ index.php?link1=404 [QSA]
+RewriteRule ^activate(/?|)$ index.php?link1=activate [QSA]
+RewriteRule ^activated/(.*)$ index.php?link1=activate&link2=$1 [NC,QSA]
+RewriteRule ^unusual-login$ index.php?link1=unusual-login [NC,QSA]
+RewriteRule ^forgot-password(/?|)$ index.php?link1=forgot-password [QSA,L]
+
+RewriteRule ^shop(/?|)$ index.php?link1=shop [QSA,L]
+
+RewriteRule ^cart(/?|)$ index.php?link1=cart [QSA,L]
+RewriteRule ^checkout(/?|)$ index.php?link1=checkout [QSA,L]
+RewriteRule ^confirm-payment(/?|)$ index.php?link1=confirm-payment [QSA,L]
+
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^@([^\/]+)(\/|)$  index.php?link1=profile&u=$1 [QSA]
+
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^confirm-payment/([A-Za-z0-9_-]+)$ index.php?link1=confirm-payment&reference=$1 [NC,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([A-Za-z0-9_]+)/([^\/]+)(\/|)$  index.php?link1=profile&u=$1&type=$2 [QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^\/]+)(\/|)$  index.php?link1=profile&u=$1 [QSA]
+
+
+# Disable index view
+Options -Indexes
+
+# Hide a specific file
+<Files .env>
+    Order allow,deny
+    Deny from all
+</Files>
