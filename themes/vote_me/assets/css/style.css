@@ -109,10 +109,6 @@ body .main{
         align-items: center;
         flex-direction: column;
         padding: 40px 0;
-        background-image: url('../images/new-bg.jpg');
-        background-position: 50% 50%;
-        background-size: cover;
-        background-repeat: no-repeat;
         color: var(--text-color-one);
         text-align: center;
     }
@@ -225,10 +221,6 @@ body .main{
         align-items: center;
         flex-direction: column;
         padding: 40px 0;
-        background-image: url('../images/new-bg.jpg');
-        background-position: 50% 50%;
-        background-size: cover;
-        background-repeat: no-repeat;
         color: var(--text-color-one);
         margin-top: 89px;
     }
@@ -749,10 +741,6 @@ body .main{
         align-items: center;
         flex-direction: column;
         padding: 40px 0;
-        background-image: url('../images/new-bg.jpg');
-        background-position: 50% 50%;
-        background-size: cover;
-        background-repeat: no-repeat;
         color: var(--text-color-one);
         margin-top: 89px;
     }
@@ -1172,10 +1160,6 @@ body .main{
         align-items: center;
         flex-direction: column;
         padding: 40px 0;
-        background-image: url('../images/new-bg.jpg');
-        background-position: 50% 50%;
-        background-size: cover;
-        background-repeat: no-repeat;
         color: var(--text-color-one);
         margin-top: 89px;
     }
@@ -1566,20 +1550,12 @@ body .main{
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background-image: url('../images/new-bg.jpg');
-        background-position: 50% 50%;
-        background-size: cover;
-        background-repeat: no-repeat;
         color: var(--text-color-one);
         position: relative;
         margin-top: 89px;
     }
 
     .main .hero .right{
-        background-image: url('../images/h-bg.jpg');
-        background-repeat: no-repeat;
-        background-position: 50% 50%;
-        background-size: cover;
         width: 40%;
         height: 60%;
         position: absolute;
@@ -2038,20 +2014,12 @@ body .main{
        display: flex;
        justify-content: space-between;
        align-items: center;
-       background-image: url('../images/new-bg.jpg');
-       background-position: 50% 50%;
-       background-size: cover;
-       background-repeat: no-repeat;
        color: var(--text-color-one);
        position: relative;
        margin-top: 89px;
    }
 
    .main .hero .right{
-       background-image: url('../images/h-bg.jpg');
-       background-repeat: no-repeat;
-       background-position: 50% 50%;
-       background-size: cover;
        width: 40%;
        height: 70%;
    }
