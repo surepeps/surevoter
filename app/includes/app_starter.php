@@ -11,13 +11,6 @@ error_reporting(E_ALL);
 
 @ini_set('max_execution_time', 0);
 
-
-//Check if the software database is installed
-if ($softwareMode == "install"){
-    header("Location: installer/welcome");
-    exit();
-}
-
 // get all Application values
 $sh = array();
 
@@ -105,10 +98,6 @@ $sh['config']['styles_cc'] = (!empty($ccode[2])) ? $ccode[2] : '';
 
 // No Image Available
 $sh['config']['no_image_available'] = $sh['config']['site_url'].'/upload/photos/no-image.png';
-
-
-//Payment variable
-$paystackApi = ($EnvpaystackApi != "") ? $EnvpaystackApi : $sh['config']['paystack_api_key'];
 
 
 // Script version

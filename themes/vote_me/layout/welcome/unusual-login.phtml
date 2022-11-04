@@ -1,0 +1,69 @@
+<div class="ps-page--my-account">
+
+    <div class="ps-my-account">
+        <div class="container">
+            <form class="ps-form--account ps-tab-root mt-0 py-5 g-0" id="confirm-form" method="post" data-parsley-validate="data-parsley-validate" data-parsley-excluded="input[type=button], input[type=submit], input[type=reset], input[type=hidden], :disabled, :hidden" autocomplete="off">
+                <ul class="ps-tab-list">
+                    <li class="active"><a href="#"><?php echo $sh['lang']['confirm_your_account']?></a></li>
+                </ul>
+                <div class="ps-tabs">
+                    <div class="ps-tab active mainlogin" id="sign-in">
+
+                        <div class="ps-form__content">
+                            <h5><?php echo $sh['lang']['sign_in_attempt']?></h5>
+
+                            <div class="de elHeadlineWrapper" id="tmp_subheadline-10287-108" data-de-type="headline" data-de-editing="false" data-title="sub-headline" data-ce="true" data-trigger="none" data-animate="fade" data-delay="500" data-gramm="false" style="margin-top: 10px; outline: none; cursor: pointer;" aria-disabled="false">
+                                <div class="errors"></div>
+                                <div class="success"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <p style="text-align:center;"><?php echo $sh['lang']['we_have_sent_you_code']?></p><br>
+                            </div>
+                            <div class="form-group form-forgot">
+                                <input required class="form-control" id="confirm_code" name="confirm_code" type="text" placeholder="Confrim Code">
+                            </div>
+                            <div class="form-group submtit">
+                                <button type="submit" class="ps-btn disable_btn ps-btn--fullwidth">Confirm Code</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<?= Sh_LoadPage('newsletter/content') ?>
+
+<script>
+
+    $('#confirm-form').parsley();
+    $('#confirm-form').ajaxForm({
+        url: Sh_Ajax_Requests_File() + '?f=confirm_user_unusal_login',
+        beforeSend: function() {
+            $('#confirm-form').parsley().validate();
+            working = true;
+            run_waitMe($('#loader'), 1, 'win8');
+            $('#confirm-form').find('button').attr("disabled", true);
+        },
+        success: function(data) {
+            $('#loader').waitMe('hide');
+            if (data.status == 200) {
+
+                sureNotify(1, data.message);
+                $('.tag_auth_animation').removeClass('hidden');
+
+                setTimeout(function () {
+                    window.location.href = data.location;
+                }, 1000);
+
+            } else {
+                $('#confirm-form').find('button').attr("disabled", false);
+                sureNotify(0, data.errors);
+            }
+            working = false;
+        }
+    });
+</script>
+

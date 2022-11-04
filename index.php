@@ -15,9 +15,11 @@ if (!empty($_GET['ref']) && $sh['loggedin'] == false && !isset($_COOKIE['src']))
         }
     }
 }
+
 if (!isset($_COOKIE['src'])) {
     @setcookie('src', '1', time() + 31556926, '/');
 }
+
 $page = '';
 
 if ($sh['loggedin'] == true && !isset($_GET['link1'])) {

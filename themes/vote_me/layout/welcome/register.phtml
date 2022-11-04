@@ -1,0 +1,216 @@
+<div class="ps-page--my-account">
+
+    <div class="ps-my-account">
+        <div class="container">
+            <form class="ps-form--account ps-tab-root mt-0 py-5 g-0" id="reg_user" method="post" autocomplete="off">
+                <ul class="ps-tab-list">
+                    <li class="active"><a href="#">Register</a></li>
+                </ul>
+
+                <div class="ps-tabs">
+                    <div class="ps-tab active mainlogin" id="register">
+
+                        <div class="valign tag_auth_animation hidden">
+                            <figure>
+                                <!--                        <a href="--><?//= $sh['config']['site_url'] ?><!--"><img src="--><?//= $sh['config']['site_logo'] ?><!--" width="120" height="35" alt="" class="logo_sticky"></a>-->
+                            </figure>
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 367.805 367.805" xml:space="preserve"> <g> <path style="fill:#3BB54A;" d="M183.903,0.001c101.566,0,183.902,82.336,183.902,183.902s-82.336,183.902-183.902,183.902 S0.001,285.469,0.001,183.903l0,0C-0.288,82.625,81.579,0.29,182.856,0.001C183.205,0,183.554,0,183.903,0.001z"/> <polygon style="fill:#fff;" points="285.78,133.225 155.168,263.837 82.025,191.217 111.805,161.96 155.168,204.801 256.001,103.968"/> </g></svg>
+                            <?php echo $sh['lang']['successfully_joined_label'] ?>
+                        </div>
+
+                        <div class="ps-form__content mainlogin">
+
+                            <div class="de elHeadlineWrapper" id="tmp_subheadline-10287-108" data-de-type="headline" data-de-editing="false" data-title="sub-headline" data-ce="true" data-trigger="none" data-animate="fade" data-delay="500" data-gramm="false" style="margin-top: 10px; outline: none; cursor: pointer;" aria-disabled="false">
+                                <div class="errors"></div>
+                                <div class="success"></div>
+                            </div>
+
+                            <h5>Register An Account</h5>
+                            <div class="form-group">
+                                <input class="form-control" type="text" autocomplete="off" name="first_name" id="first_name" placeholder="First Name (*)">
+                            </div>
+                            <div class="form-group">
+                                <input autocomplete="off" autofocus required type="hidden" value="<?= "user_".Sh_GenerateKey(4, 6, false, false, true, false) ?>" class="form-control" name="username" id="user_n">
+                                <input class="form-control" type="text" autocomplete="off" name="last_name" id="last_name" placeholder="Last Name">
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" type="email" autocomplete="off" name="email" id="email" placeholder="Email (*)">
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" type="text" autocomplete="off" name="phone_num" id="phone_num" placeholder="Phone Number">
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" type="password" autocomplete="off" id="password" name="password" placeholder="Password (*)">
+                                <?php if ($sh['config']['password_complexity_system'] == 1) { ?>
+                                    <ul class="list-unstyled helper-text elAlign_left" style="color: red;">
+                                        <li class="length"><?php echo $sh['lang']['least_characters']; ?></li>
+                                        <li class="lowercase"><?php echo $sh['lang']['contain_lowercase']; ?></li>
+                                        <li class="uppercase"><?php echo $sh['lang']['contain_uppercase']; ?></li>
+                                        <li class="special"><?php echo $sh['lang']['number_special']; ?></li>
+                                    </ul>
+                                <?php } ?>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" type="password" autocomplete="off" id="confirm_password" name="confirm_password" placeholder="Confirm Password (*)">
+                            </div>
+                            <div class="form-group submtit">
+                                <button type="submit" id="reg_btn" class="disable_btn ps-btn ps-btn--fullwidth"><?php echo $sh['lang']['register']?></button>
+                            </div>
+
+                        </div>
+                        <br>
+
+                        <?php if(1>2):?>
+                            <?= Sh_LoadPage('login-with/show-icons') ?>
+                        <?php endif; ?>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    var working = false;
+    var $this = $('#reg_user');
+    var $state = $this.find('.errors');
+    var $login_anim = $('.tag_auth_animation');
+
+    $(function() {
+        $this.ajaxForm({
+            url: Sh_Ajax_Requests_File() + '?f=register&s=register',
+            beforeSend: function() {
+                run_waitMe($('#loader'), 1, 'win8');
+                <?php if ($sh['config']['password_complexity_system'] == 1) { ?>
+                if ($('.helper-text .length').hasClass('valid') && $('.helper-text .lowercase').hasClass('valid') && $('.helper-text .uppercase').hasClass('valid') && $('.helper-text .special').hasClass('valid')) {
+                    working = true;
+                    $this.find('button').attr("disabled", true);
+                }
+                else{
+                    $("html, body").animate({ scrollTop: 0 }, 150);
+                    $state.addClass('alert alert-danger').html("<?php echo($sh['lang']['complexity_requirements']) ?>");
+                    return false;
+                }
+                <?php } else{ ?>
+                working = true;
+                $this.find('button').attr("disabled", true);
+                <?php } ?>
+            },
+            success: function(data) {
+                $('#loader').waitMe('hide');
+                if (data.status == 200) {
+                    $login_anim.removeClass('hidden');
+                    setTimeout(function () {
+                        window.location.href = data.location;
+                    }, 1000);
+                } else if (data.status == 300) {
+                    window.location.href = data.location;
+                } else {
+                    $("html, body").animate({ scrollTop: 0 }, 150);
+                    $this.find('button').attr("disabled", false);
+                    $state.addClass('alert alert-danger').html(data.errors);
+                }
+                working = false;
+            }
+        });
+    });
+
+    function activateButton(element) {
+        if(element.checked) {
+            document.getElementById("sign_submit").disabled = false;
+        }
+        else  {
+            document.getElementById("sign_submit").disabled = true;
+        }
+    };
+
+    <?php if ($sh['config']['password_complexity_system'] == 1) { ?>
+    (function(){
+        var helperText = {
+            charLength: document.querySelector('.helper-text .length'),
+            lowercase: document.querySelector('.helper-text .lowercase'),
+            uppercase: document.querySelector('.helper-text .uppercase'),
+            special: document.querySelector('.helper-text .special')
+        };
+        var password = document.querySelector('#password');
+        var pattern = {
+            charLength: function() {
+                if( password.value.length >= 6 ) {
+                    return true;
+                }
+            },
+            lowercase: function() {
+                var regex = /^(?=.*[a-z]).+$/;
+                if( regex.test(password.value) ) {
+                    return true;
+                }
+            },
+            uppercase: function() {
+                var regex = /^(?=.*[A-Z]).+$/;
+                if( regex.test(password.value) ) {
+                    return true;
+                }
+            },
+            special: function() {
+                var regex = /^(?=.*[0-9_\W]).+$/;
+                if( regex.test(password.value) ) {
+                    return true;
+                }
+            }
+        };
+        password.addEventListener('keyup', function (){
+            $('.helper-text').slideDown('slow', function() {
+
+            });
+            patternTest( pattern.charLength(), helperText.charLength );
+            patternTest( pattern.lowercase(), helperText.lowercase );
+            patternTest( pattern.uppercase(), helperText.uppercase );
+            patternTest( pattern.special(), helperText.special );
+            if( hasClass(helperText.charLength, 'valid') &&
+                hasClass(helperText.lowercase, 'valid') &&
+                hasClass(helperText.uppercase, 'valid') &&
+                hasClass(helperText.special, 'valid')
+            ) {
+                addClass(password.parentElement, 'valid');
+            }
+            else {
+                removeClass(password.parentElement, 'valid');
+            }
+        });
+        function patternTest(pattern, response) {
+            if(pattern) {
+                addClass(response, 'valid');
+            }
+            else {
+                removeClass(response, 'valid');
+            }
+        }
+        function addClass(el, className) {
+            if (el.classList) {
+                el.classList.add(className);
+            }
+            else {
+                el.className += ' ' + className;
+            }
+        }
+        function removeClass(el, className) {
+            if (el.classList)
+                el.classList.remove(className);
+            else
+                el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+        }
+        function hasClass(el, className) {
+            if (el.classList) {
+                console.log(el.classList);
+                return el.classList.contains(className);
+            }
+            else {
+                new RegExp('(^| )' + className + '( |$)', 'gi').test(el.className);
+            }
+        }
+    })();
+    <?php } ?>
+</script>
+
+<?= Sh_LoadPage('newsletter/content') ?>

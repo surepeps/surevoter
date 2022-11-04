@@ -30,13 +30,3 @@ $sql_db_port = collectEnv('DB_PORT');
  *
  */
 $site_url = collectEnv('BASE_URL');
-
-/*
- *
- * ------------------------------------------------------------
- * APPLICATION MODE (installed / yet to be installed)
- * ------------------------------------------------------------
- *
- */
-
-$softwareMode = collectEnv('APP_MODE');;

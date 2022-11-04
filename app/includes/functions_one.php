@@ -1,5 +1,90 @@
 <?php
 
+require_once('app_starter.php');
+
+
+
+/**
+ * Get banned ap address
+ * @param $type
+ * @return array
+ */
+function Sh_GetBanned($type = '') {
+    global $sqlConnect;
+    $data  = array();
+    $query = mysqli_query($sqlConnect, "SELECT * FROM " . T_BANNED_IPS . " ORDER BY id DESC");
+    if ($type == 'user') {
+        while ($fetched_data = mysqli_fetch_assoc($query)) {
+            if (filter_var($fetched_data['ip_address'], FILTER_VALIDATE_IP)) {
+                $data[] = $fetched_data['ip_address'];
+            }
+        }
+    } else {
+        while ($fetched_data = mysqli_fetch_assoc($query)) {
+            $data[] = $fetched_data;
+        }
+    }
+    return $data;
+}
+
+
+/* @param $user_id
+* @param $password
+* @return array|false|mixed|null
+*/
+function Sh_UserData($user_id, $password = true) {
+   global $sh, $sqlConnect, $cache;
+   if (empty($user_id) || !is_numeric($user_id) || $user_id < 0) {
+       return false;
+   }
+   $data = array();
+   $user_id  = Sh_Secure($user_id);
+   $query_one      = "SELECT * FROM " . T_USERS . " WHERE `user_id` = {$user_id}";
+   $hashed_user_Id = md5($user_id);
+   if ($sh['config']['cacheSystem'] == 1) {
+       $fetched_data = $cache->read($hashed_user_Id . '_U_Data.tmp');
+       if (empty($fetched_data)) {
+           $sql          = mysqli_query($sqlConnect, $query_one);
+           $fetched_data = mysqli_fetch_assoc($sql);
+           $cache->write($hashed_user_Id . '_U_Data.tmp', $fetched_data);
+       }
+   } else {
+       $sql          = mysqli_query($sqlConnect, $query_one);
+       $fetched_data = mysqli_fetch_assoc($sql);
+   }
+   if (empty($fetched_data)) {
+       return array();
+   }
+   if ($password == false) {
+       unset($fetched_data['password']);
+   }
+   $fetched_data['avatar_org'] = $fetched_data['avatar'];
+   $fetched_data['cover_org']  = $fetched_data['cover'];
+   $explode2                   = @end(explode('.', $fetched_data['cover']));
+   $explode3                   = @explode('.', $fetched_data['cover']);
+
+   $explode2                   = @end(explode('.', $fetched_data['avatar']));
+   $explode3                   = @explode('.', $fetched_data['avatar']);
+
+   $fetched_data['avatar'] = Sh_GetMedia($fetched_data['avatar']) . '?cache=' . $fetched_data['last_avatar_mod'];
+   $fetched_data['id']     = $fetched_data['user_id'];
+   $fetched_data['user_platform'] = Sh_GetPlatformFromUser_ID($fetched_data['user_id']);
+   $fetched_data['type']   = 'user';
+
+   $fetched_data['name']   = '';
+
+   if (!empty($fetched_data['first_name'])) {
+       if (!empty($fetched_data['last_name'])) {
+           $fetched_data['name'] = $fetched_data['first_name'] . ' ' . $fetched_data['last_name'];
+       } else {
+           $fetched_data['name'] = $fetched_data['first_name'];
+       }
+   } else {
+       $fetched_data['name'] = $fetched_data['username'];
+   }
+
+   return $fetched_data;
+}
 
 /**
  * @param $user_id
@@ -329,3 +414,166 @@ function Sh_CheckMainSession($hash = '') {
     }
     return false;
 }
+
+
+/**
+ * @param $email
+ * @return bool
+ */
+function Sh_EmailExists($email) {
+    global $sqlConnect;
+    if (empty($email)) {
+        return false;
+    }
+    $email = Sh_Secure($email);
+    $query = mysqli_query($sqlConnect, "SELECT COUNT(`user_id`) FROM " . T_USERS . " WHERE `email` = '{$email}'");
+    return (Sh_Sql_Result($query, 0) == 1) ? true : false;
+}
+
+
+
+/**
+ * @param $email
+ * @param $code
+ * @return bool|void
+ */
+function Sh_ActivateUser($email, $code) {
+
+    global $sqlConnect;
+    $email  = Sh_Secure($email);
+    $code   = Sh_Secure($code);
+    $query  = mysqli_query($sqlConnect, " SELECT COUNT(`user_id`)  FROM " . T_USERS . "  WHERE `email` = '{$email}' AND `email_code` = '{$code}' AND `active` = '0'");
+    $result = Sh_Sql_Result($query, 0);
+    if ($result == 1) {
+        $query_two = mysqli_query($sqlConnect, " UPDATE " . T_USERS . "  SET `active` = '1' WHERE `email` = '{$email}' ");
+        if ($query_two) {
+            return true;
+        }
+    } else {
+        return false;
+    }
+}
+
+/**
+ * @param $user_id
+ * @return bool
+ */
+function Sh_IsAdmin($user_id = 0) {
+    global $sh, $sqlConnect;
+    if ($sh['loggedin'] == false) {
+        return false;
+    }
+    $user_id = Sh_Secure($user_id);
+    if (!empty($user_id) && $user_id > 0) {
+        $query = mysqli_query($sqlConnect, "SELECT COUNT(`user_id`) as count FROM " . T_USERS . " WHERE admin = '1' AND user_id = {$user_id}");
+        $sql   = mysqli_fetch_assoc($query);
+        if ($sql['count'] > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    if ($sh['user']['admin'] == 1) {
+        return true;
+    }
+    return false;
+}
+
+
+/**
+ * @param $username
+ * @return bool
+ */
+function Sh_VerfiyIP($username = '') {
+    global $sh, $db;
+    if (empty($username)) {
+        return false;
+    }
+    if ($sh['config']['login_auth'] == 0) {
+        return true;
+    }
+    $getuser = Sh_UserData(Sh_UserIdForLogin($username));
+    $get_ip = get_ip_address();
+    $getIpInfo = fetchDataFromURL("http://ip-api.com/json/$get_ip");
+    $getIpInfo = json_decode($getIpInfo, true);
+    if ($getIpInfo['status'] == 'success' && !empty($getIpInfo['regionName']) && !empty($getIpInfo['countryCode']) && !empty($getIpInfo['timezone']) && !empty($getIpInfo['city'])) {
+        $create_new = false;
+        $_SESSION['last_login_data'] = $getIpInfo;
+        if (empty($getuser['last_login_data'])) {
+            $create_new = true;
+        } else {
+            $lastLoginData = (Array) json_decode($getuser['last_login_data']);
+            if (($getIpInfo['regionName'] != $lastLoginData['regionName']) || ($getIpInfo['countryCode'] != $lastLoginData['countryCode']) || ($getIpInfo['timezone'] != $lastLoginData['timezone']) || ($getIpInfo['city'] != $lastLoginData['city'])) {
+                // send email
+                $code = rand(111111, 999999);
+                $hash_code = md5($code);
+                $sh['email']['username'] = $getuser['name'];
+                $sh['email']['countryCode'] = $getIpInfo['countryCode'];
+                $sh['email']['timezone'] = $getIpInfo['timezone'];
+                $sh['email']['email'] = $getuser['email'];
+                $sh['email']['ip_address'] = $get_ip;
+                $sh['email']['code'] = $code;
+                $sh['email']['city'] = $getIpInfo['city'];
+                $sh['email']['date'] = date("Y-m-d h:i:sa");
+                $update_code =  $db->where('user_id', $getuser['user_id'])->update(T_USERS, array('email_code' => $hash_code));
+                $email_body = Sh_LoadPage("emails/unusual-login");
+                $send_message_data       = array(
+                    'from_email' => $sh['config']['siteEmail'],
+                    'from_name' => $sh['config']['siteName'],
+                    'to_email' => $getuser['email'],
+                    'to_name' => $getuser['name'],
+                    'subject' => 'Please verify that it’s you',
+                    'charSet' => 'utf-8',
+                    'message_body' => $email_body,
+                    'is_html' => true
+                );
+                $send = Sh_SendMessage($send_message_data);
+                if ($send && !empty($_SESSION['last_login_data'])) {
+                    return false;
+                } else {
+                    return true;
+                }
+            } else {
+                return true;
+            }
+        }
+        if ($create_new == true) {
+            $lastLoginData = json_encode($getIpInfo);
+            $update_user = $db->where('user_id', $getuser['user_id'])->update(T_USERS, array('last_login_data' => $lastLoginData));
+            return true;
+        }
+        return false;
+    } else {
+        return true;
+    }
+}
+
+
+/**
+ * @param $table
+ * @param $options
+ * @return string
+ */
+function insertRow($table, $options){
+    global $sqlConnect;
+    $query = "";
+
+    foreach($options as $key => $option){
+        if(empty($option)){
+            unset($options[$key]);
+        }
+
+        $options[$key] = addslashes($option);
+    }
+
+    if(count($options)){
+        $columns = implode(',', array_keys($options));
+        $values = "'" .implode("','", array_values($options)) . "'";
+
+        $query = "INSERT INTO $table ({$columns}) VALUES ({$values})";
+
+    }
+
+    return mysqli_query($sqlConnect, $query);
+}
+

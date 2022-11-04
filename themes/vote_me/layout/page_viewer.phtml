@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="Surecoders">
+    <meta name="title" content="<?= $sh['title'] ?>">
+    <meta name="keywords" content="<?= $sh['keywords'] ?>">
+    <meta name="description" content="<?= $sh['description'] ?>">
+    <title><?= $sh['title'] ?></title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="<?= $sh['config']['site_url'].'/'.$sh['config']['partner1_image'] ?>">
+
+    <?php if ($sh['page'] == 'maintenance') { ?>
+        <meta name="robots" content="noindex">
+        <meta name="googlebot" content="noindex">
+    <?php } ?>
+
+    <?php if ($sh['page'] == 'product' && !empty($sh['product_d'])) { ?>
+        <meta property="og:title" content="<?php echo $sh['product_d']['product_name']. ' | '. OnlyPricePromoPrice($sh['product_d']['pricing_and_promotion']['price'],$sh['product_d']['pricing_and_promotion']['promo_price']); ?>" />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content="<?php echo Sh_Link($sh['product_d']['product_slug']); ?>" />
+        <meta property="og:image" content="<?php echo $sh['product_d']['product_images']['images']['featured']; ?>" />
+        <meta property="og:image:secure_url" content="<?php echo $sh['product_d']['product_images']['images']['featured']; ?>" />
+        <meta property="og:description" content="<?php echo limit_text($sh['product_d']['product_description'], 20); ?>" />
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:title" content="<?php echo $sh['product_d']['product_name']. ' | '. OnlyPricePromoPrice($sh['product_d']['pricing_and_promotion']['price'],$sh['product_d']['pricing_and_promotion']['promo_price']); ?>" />
+        <meta name="twitter:description" content="<?php echo limit_text($sh['product_d']['product_description'], 20); ?>" />
+        <meta name="twitter:image" content="<?php echo $sh['product_d']['product_images']['images']['featured']; ?>" />
+    <?php } ?>
+
+
+    <?php if ($sh['page'] == 'page' && !empty($sh['page_d'])) { ?>
+        <meta property="og:title" content="<?php echo $sh['page_d']['page_name']; ?>" />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content="<?php echo Sh_Link($sh['page_d']['page_slug']); ?>" />
+        <meta property="og:image" content="<?= Sh_Link('upload/pages/'.$sh['page_d']['pageImg']) ?>" />
+        <meta property="og:image:secure_url" content="<?= Sh_Link('upload/pages/'.$sh['page_d']['pageImg']) ?>" />
+        <meta property="og:description" content="<?php echo limit_text($sh['page_d']['page_description'], 20); ?>" />
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:title" content="<?php echo $sh['page_d']['page_name']; ?>" />
+        <meta name="twitter:description" content="<?php echo limit_text($sh['page_d']['page_description'], 20); ?>" />
+        <meta name="twitter:image" content="<?= Sh_Link('upload/pages/'.$sh['page_d']['pageImg']) ?>" />
+    <?php } ?>
+
+    <?php if ($sh['page'] == 'welcome') { ?>
+        <meta property="og:title" content="<?php echo $sh['title'];?>" />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content="<?php echo $sh['config']['site_url'];?>" />
+        <meta property="og:image" content="<?= $sh['config']['site_url'].'/'.$sh['config']['site_logo'] ?>" />
+        <meta property="og:image:secure_url" content="<?= $sh['config']['site_url'].'/'.$sh['config']['site_logo'] ?>" />
+        <meta property="og:description" content="<?php echo $sh['description'];?>" />
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:title" content="<?php echo $sh['title'];?>" />
+        <meta name="twitter:description" content="<?php echo $sh['description'];?>" />
+        <meta name="twitter:image" content="<?= $sh['config']['site_url'].'/'.$sh['config']['site_logo'] ?>" />
+    <?php } ?>
+
+    <style>
+        :root{
+            --p_color: <?php echo $sh['config']['primary_color']?>;
+            --s_color: <?php echo $sh['config']['secondary_color']?>;
+            --r_color: <?php echo $sh['config']['text_color']?>;
+        }
+    </style>
+
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:300,400,500,600,700&amp;amp;subset=latin-ext" rel="stylesheet">
+    <link rel="stylesheet" href="<?php echo $sh['config']['theme_assets_url'];?>/plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="<?php echo $sh['config']['theme_assets_url'];?>/fonts/Linearicons/Linearicons/Font/demo-files/demo.css">
+    <link rel="stylesheet" href="<?php echo $sh['config']['theme_assets_url'];?>/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo $sh['config']['theme_assets_url'];?>/plugins/owl-carousel/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="<?php echo $sh['config']['theme_assets_url'];?>/plugins/owl-carousel/assets/owl.theme.default.min.css">
+    <link rel="stylesheet" href="<?php echo $sh['config']['theme_assets_url'];?>/plugins/slick/slick/slick.css">
+    <link rel="stylesheet" href="<?php echo $sh['config']['theme_assets_url'];?>/plugins/nouislider/nouislider.min.css">
+    <link rel="stylesheet" href="<?php echo $sh['config']['theme_assets_url'];?>/plugins/lightGallery-master/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="<?php echo $sh['config']['theme_assets_url'];?>/plugins/jquery-bar-rating/dist/themes/fontawesome-stars.css">
+    <link rel="stylesheet" href="<?php echo $sh['config']['theme_assets_url'];?>/plugins/select2/dist/css/select2.min.css">
+    <link rel="stylesheet" href="<?php echo $sh['config']['theme_assets_url'];?>/css/style.css">
+    <link rel="stylesheet" href="<?php echo $sh['config']['theme_assets_url'];?>/css/custom.css">
+
+    <script src="<?php echo $sh['config']['theme_assets_url'];?>/plugins/jquery.min.js"></script>
+    <script src="<?= Sh_LoadAdminLink('assets/jquery.form.min.js') ?>"></script>
+
+    <?php if (!empty($_SERVER) && !empty($_SERVER['REQUEST_URI'])) {
+        $link_text = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+        ?>
+        <link rel="canonical" href="<?php echo($link_text) ?>" />
+    <?php } ?>
+
+
+    <script type="text/javascript">
+        <?php echo $sh['config']['header_cc']; ?>
+        function Sh_Ajax_Requests_File(){
+            return "<?php echo $sh['config']['site_url'].'/requests.php';?>"
+        }
+    </script>
+
+    <link href="<?= Sh_LoadAdminLink('assets/css/waitMe.css') ?>" rel="stylesheet" />
+    <script src="<?= Sh_LoadAdminLink('assets/js/waitMe.js') ?>"></script>
+
+    <script src="<?= Sh_LoadAdminLink('assets/js/custom.js') ?>"></script>
+
+    <script src="<?php echo $sh['config']['theme_assets_url'];?>/js/functions.js"></script>
+
+    <link href="<?= Sh_LoadAdminLink('plugins/notification/snackbar/snackbar.min.css') ?>" rel="stylesheet" type="text/css" />
+    <script src="<?= Sh_LoadAdminLink('plugins/notification/snackbar/snackbar.min.js') ?>"></script>
+
+    <!--  Form Validation cdn  -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/parsley.js/2.1.2/parsley.min.js"></script>
+    <link href="https://parsleyjs.org/src/parsley.css" rel="stylesheet">
+
+</head>
+
+<?php
+//Count visitor
+getVisitorTracks();
+
+//Social referral links
+getRefferalUrlLink();
+
+?>
+
+<style>
+    .ps-product--quickview{
+        display: block !important;
+    }
+
+    .ps-product .ps-product__rating .br-wrapper a:nth-child(1){
+        display: none !important;
+    }
+
+    .ps-block--average-rating .ps-block__header .br-wrapper a:nth-child(1){
+        display: none !important;
+    }
+
+    .ps-product--detail .ps-product__meta .ps-product__rating .br-wrapper a:nth-child(1){
+        display: none !important;
+    }
+
+    /*.br-theme-fontawesome-stars .br-widget a:nth-child(1){*/
+    /*    display: none !important;*/
+    /*}*/
+
+    .ps-panel--search-result-mobile.active {
+        transform: scale3d(1, 1, 1);
+        opacity: 1;
+        visibility: visible;
+    }
+    .ps-panel--search-result-mobile {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        z-index: 999;
+        background-color: #fff;
+        border: 1px solid #eaeaea;
+        padding: 10px 20px;
+        transition: all 0.4s ease;
+        opacity: 0;
+        visibility: hidden;
+        transform: scale3d(1, 1, 0);
+    }
+</style>
+
+
+<body id="loader">
+
+<input type="hidden" class="main_session" value="<?php echo Sh_CreateMainSession();?>">
+
+<?= Sh_LoadPage('header/content') ?>
+
+<?= $sh['content'] ?>
+
+<footer class="ps-footer">
+
+    <!-- Go to www.addthis.com/dashboard to customize your tools -->
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-62fe79acb688202a"></script>
+
+    <script>
+        var url =  '<?php echo $sh['config']['theme_assets_url'];?>/js/whatsapp-loader.js';
+        var s = document.createElement('script');
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = url;
+        var options = {
+            "enabled":true,
+            "chatButtonSetting":{
+                "backgroundColor":"#4dc247",
+                "ctaText":"",
+                "borderRadius":"25",
+                "marginLeft":"0",
+                "marginBottom":"50",
+                "marginRight":"50",
+                "position":"right"
+            },
+            "brandSetting":{
+                "brandName":"<?= $sh['config']['siteName'] ?>",
+                "brandSubTitle":"Typically replies within a day",
+                "brandImg": "<?= Sh_Link($sh['config']['site_logo']) ?>",
+                "welcomeText":"Hi there!\nHow can I help you?",
+                "messageText":"Hello, I have a question about {{page_link}}",
+                "backgroundColor":"#0a5f54",
+                "ctaText":"Start Chat",
+                "borderRadius":"25",
+                "autoShow":false,
+                "phoneNumber":"<?= $sh['config']['contact_phone'] ?>"
+            }
+        };
+        s.onload = function() {
+            CreateWhatsappChatWidget(options);
+        };
+        var x = document.getElementsByTagName('script')[0];
+        x.parentNode.insertBefore(s, x);
+    </script>
+
+    <?= Sh_LoadPage('footer/content') ?>
+</footer>
+<div id="back2top"><i class="icon icon-arrow-up"></i></div>
+<div class="ps-site-overlay"></div>
+
+<?= Sh_LoadPage('mobile/content') ?>
+
+<?= Sh_LoadPage('modal/content') ?>
+
+
+<script src="<?php echo $sh['config']['theme_assets_url'];?>/plugins/nouislider/nouislider.min.js"></script>
+<script src="<?php echo $sh['config']['theme_assets_url'];?>/plugins/popper.min.js"></script>
+<script src="<?php echo $sh['config']['theme_assets_url'];?>/plugins/owl-carousel/owl.carousel.min.js"></script>
+<script src="<?php echo $sh['config']['theme_assets_url'];?>/plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="<?php echo $sh['config']['theme_assets_url'];?>/plugins/imagesloaded.pkgd.min.js"></script>
+<script src="<?php echo $sh['config']['theme_assets_url'];?>/plugins/masonry.pkgd.min.js"></script>
+<script src="<?php echo $sh['config']['theme_assets_url'];?>/plugins/isotope.pkgd.min.js"></script>
+<script src="<?php echo $sh['config']['theme_assets_url'];?>/plugins/jquery.matchHeight-min.js"></script>
+<script src="<?php echo $sh['config']['theme_assets_url'];?>/plugins/slick/slick/slick.min.js"></script>
+<script src="<?php echo $sh['config']['theme_assets_url'];?>/plugins/jquery-bar-rating/dist/jquery.barrating.min.js"></script>
+<script src="<?php echo $sh['config']['theme_assets_url'];?>/plugins/slick-animation.min.js"></script>
+<script src="<?php echo $sh['config']['theme_assets_url'];?>/plugins/lightGallery-master/dist/js/lightgallery-all.min.js"></script>
+<script src="<?php echo $sh['config']['theme_assets_url'];?>/plugins/select2/dist/js/select2.full.min.js"></script>
+<script src="<?php echo $sh['config']['theme_assets_url'];?>/plugins/gmap3.min.js"></script>
+<!-- custom scripts-->
+<script src="<?php echo $sh['config']['theme_assets_url'];?>/js/main.js"></script>
+<input type="hidden" name="order_data" id="order_data">
+</body>
+
+<script>
+
+</script>
+</html>
