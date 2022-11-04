@@ -1,10 +1,4 @@
 <?php
-/**
- * betasouk
- * Created by SureCoder
- * FILE NAME: login.php
- * YEAR: 2022
- */
 
 if ($sh['loggedin'] == true) {
     header("Location:" . $sh['config']['site_url']);

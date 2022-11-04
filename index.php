@@ -44,6 +44,9 @@ if ($sh['loggedin'] == true) {
         case 'home':
             include('routes/welcome.php');
             break;
+        case 'login':
+            include('routes/login.php');
+            break;
 
     }
 
@@ -56,6 +59,9 @@ if ($sh['loggedin'] == true) {
         case 'register':
             include('routes/register.php');
             break;
+        case 'login':
+            include('routes/login.php');
+            break;    
     }
 
 }
@@ -64,7 +70,12 @@ if (empty($sh['content'])) {
     include('routes/404.php');
 }
 
-echo Sh_LoadPage('page_viewer');
+if ($sh['page'] == 'login') {
+    echo Sh_LoadPage('login_viewer');
+}else{
+    echo Sh_LoadPage('page_viewer');
+}
+
 
 
 mysqli_close($sqlConnect);

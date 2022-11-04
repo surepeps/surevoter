@@ -1,229 +1,99 @@
-<?php
-/**
- * All Active Products
- */
-$allProducts = Sh_FetchAllProducts('status = 1 ORDER BY RAND() LIMIT 12');
+<!-- Hero section --> 
+<div class="hero section">
+    <div class="left">
+        <div class="h-logo">
+            <img src="images/no-bg-logo.png" alt="">
+        </div>
+        <h1 class="h-title">Momudu University</h1>
+        <h3 class="h-sub-title">2022 Student Body Election</h3>
+        <a href="#" class="btn">Vote Now</a>
+    </div>
+    <div class="right"></div>
+</div>
 
+<!-- List of Contestants -->
+<div class="contest section">
+    <div class="c-rows">
+        <div class="c-title">
+            <h3 class="cc-title">Annual Student Body Election is Ongoing</h3>
+            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nihil nisi repellendus distinctio fugit, dolores facilis modi ab exercitationem excepturi perferendis.</p>
+        </div>
+        <div class="cards">
+            <div class="card-title">President <label for="">Faculty of Science</label></div>
+            <div class="all-cards">
+                <!-- Single card -->
+                <div class="card">
+                    <div class="img">
+                        <img src="images/contenst-1.png" alt="">
+                    </div>
+                    <div class="desc">
+                        <h3 class="name">Hassan Tijani.A</h3>
+                        <p class="dep">400lv, ZLY</p>
+                    </div>
+                </div>
 
-/**
- * All Active Category
- */
-$catLimit = $sh['config']['random_category_limit'];
-$categories = getAllCategoryData("status = 1 ORDER BY RAND() LIMIT $catLimit");
+                <!-- Single card -->
+                <div class="card">
+                    <div class="img">
+                        <img src="images/contenst-1.png" alt="">
+                    </div>
+                    <div class="desc">
+                        <h3 class="name">Hassan Tijani.A</h3>
+                        <p class="dep">400lv, ZLY</p>
+                    </div>
+                </div>
 
-
-/**
- * All Active Subcategories
- */
-
-
-/**
- * All Active Vendors or Shops
- */
-
-
-/**
- * ADS BANNER
- */
-$heroSection = unserialize($sh['config']['hero_section_banner'] ?? '');
-$dealsofthedaySection = unserialize($sh['config']['deals_of_the_day_section_banner'] ?? '');
-$belowCatSection = unserialize($sh['config']['below_cat_section_banner'] ?? '');
-$newsletterSection = unserialize($sh['config']['newsletter_cat_section_banner'] ?? '');
-
-
-// EVENT IMAGE
-$eventImage = $sh['config']['event_image'];
-
-?>
-
-
-<div id="homepage-1">
-    <div class="ps-home-banner ps-home-banner--1">
-        <div class="ps-container">
-            <div class="ps-section__left">
-                <div class="ps-carousel--nav-inside owl-slider" data-owl-auto="true" data-owl-loop="true" data-owl-speed="5000" data-owl-gap="0" data-owl-nav="true" data-owl-dots="true" data-owl-item="1" data-owl-item-xs="1" data-owl-item-sm="1" data-owl-item-md="1" data-owl-item-lg="1" data-owl-duration="1000" data-owl-mousedrag="on" data-owl-animate-in="fadeIn" data-owl-animate-out="fadeOut">
-                    <?php
-                    if(isset($sh['config']['banner_image'])):
-                        foreach (unserialize($sh['config']['banner_image']) as $bgImg):
-                            ?>
-                            <div class="ps-banner bg--cover" data-background="<?= Sh_Link('upload/banners/'.$bgImg) ?>"><a class="ps-banner__overlay" href="#"></a></div>
-
-                        <?php endforeach; endif; ?>
+                <!-- Single card -->
+                <div class="card">
+                    <div class="img">
+                        <img src="images/contenst-1.png" alt="">
+                    </div>
+                    <div class="desc">
+                        <h3 class="name">Hassan Tijani.A</h3>
+                        <p class="dep">400lv, ZLY</p>
+                    </div>
                 </div>
             </div>
-            <?php if(isset($heroSection) && !empty($heroSection)): ?>
-                <div class="ps-section__right">
-                    <?php foreach ($heroSection as $hsi): ?>
-                        <a class="ps-collection" href="#">
-                            <img width="390px" height="193px" src="<?= Sh_Link("upload/banners/".$hsi) ?>" alt="">
-                        </a>
-                    <?php endforeach; ?>
+            
+        </div>
+
+        <div class="cards">
+            <div class="card-title">President <label for="">Faculty of Science</label></div>
+            <div class="all-cards">
+                <!-- Single card -->
+                <div class="card">
+                    <div class="img">
+                        <img src="images/contenst-1.png" alt="">
+                    </div>
+                    <div class="desc">
+                        <h3 class="name">Hassan Tijani.A</h3>
+                        <p class="dep">400lv, ZLY</p>
+                    </div>
                 </div>
-            <?php endif; ?>
+
+                <!-- Single card -->
+                <div class="card">
+                    <div class="img">
+                        <img src="images/contenst-1.png" alt="">
+                    </div>
+                    <div class="desc">
+                        <h3 class="name">Hassan Tijani.A</h3>
+                        <p class="dep">400lv, ZLY</p>
+                    </div>
+                </div>
+
+                <!-- Single card -->
+                <div class="card">
+                    <div class="img">
+                        <img src="images/contenst-1.png" alt="">
+                    </div>
+                    <div class="desc">
+                        <h3 class="name">Hassan Tijani.A</h3>
+                        <p class="dep">400lv, ZLY</p>
+                    </div>
+                </div>
+            </div>
+            
         </div>
     </div>
-
-    <div class="ps-site-features">
-        <div class="ps-container">
-            <div class="ps-block--site-features">
-                <div class="ps-block__item">
-                    <div class="ps-block__left"><i class="icon-rocket"></i></div>
-                    <div class="ps-block__right">
-                        <h4><?= $sh['config']['work_step_1_title'] ?></h4>
-                        <p><?= $sh['config']['work_step_1_desc'] ?></p>
-                    </div>
-                </div>
-                <div class="ps-block__item">
-                    <div class="ps-block__left"><i class="icon-sync"></i></div>
-                    <div class="ps-block__right">
-                        <h4><?= $sh['config']['work_step_2_title'] ?></h4>
-                        <p><?= $sh['config']['work_step_2_desc'] ?></p>
-                    </div>
-                </div>
-                <div class="ps-block__item">
-                    <div class="ps-block__left"><i class="icon-credit-card"></i></div>
-                    <div class="ps-block__right">
-                        <h4><?= $sh['config']['work_step_3_title'] ?></h4>
-                        <p><?= $sh['config']['work_step_3_desc'] ?></p>
-                    </div>
-                </div>
-                <div class="ps-block__item">
-                    <div class="ps-block__left"><i class="icon-bubbles"></i></div>
-                    <div class="ps-block__right">
-                        <h4><?= $sh['config']['work_step_4_title'] ?></h4>
-                        <p><?= $sh['config']['work_step_4_desc'] ?></p>
-                    </div>
-                </div>
-                <div class="ps-block__item">
-                    <div class="ps-block__left"><i class="icon-gift"></i></div>
-                    <div class="ps-block__right">
-                        <h4><?= $sh['config']['work_step_5_title'] ?></h4>
-                        <p><?= $sh['config']['work_step_5_desc'] ?></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="ps-deal-of-day">
-        <div class="ps-container">
-            <div class="ps-section__header">
-                <div class="ps-block--countdown-deal">
-                    <div class="ps-block__left">
-                        <h3>Deals of the day</h3>
-                    </div>
-                </div><a href="<?= Sh_Link('shop') ?>">View all</a>
-            </div>
-            <div class="ps-section__content">
-                <div class="ps-carousel--nav owl-slider" data-owl-auto="false" data-owl-loop="false" data-owl-speed="10000" data-owl-gap="30" data-owl-nav="true" data-owl-dots="true" data-owl-item="7" data-owl-item-xs="2" data-owl-item-sm="3" data-owl-item-md="4" data-owl-item-lg="5" data-owl-item-xl="6" data-owl-duration="1000" data-owl-mousedrag="on">
-                    <?php foreach ($allProducts as $prod) {
-                        $sh['products'] = $prod;
-                        ?>
-                        <?= Sh_LoadPage('home-productdata/deal') ?>
-                    <?php } ?>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <?php if(isset($dealsofthedaySection) && !empty($dealsofthedaySection)): ?>
-        <div class="ps-home-ads">
-            <div class="ps-container">
-                <div class="row">
-                    <?php foreach ($dealsofthedaySection as $dotd): ?>
-                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 ">
-                            <a class="ps-collection" href="#">
-                                <img width="530px" height="285px" src="<?= Sh_Link("upload/banners/".$dotd) ?>" alt="">
-                            </a>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-        </div>
-    <?php endif; ?>
-
-    <div class="ps-top-categories">
-        <div class="ps-container">
-            <h3>Top categories of the month</h3>
-            <div class="row">
-
-                <?php foreach ($categories as $c):?>
-                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 ">
-                        <div class="ps-block--category">
-                            <a class="ps-block__overlay" href="<?= Sh_Link($c['slug']) ?>"></a>
-                            <p><?= $c['name'] ?></p>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-
-
-            </div>
-        </div>
-    </div>
-
-    <!-- Category Product display Start-->
-    <?= Sh_LoadPage('home-productdata/category-product') ?>
-    <!-- Category Product display Ends -->
-
-    <?php if(isset($belowCatSection) && !empty($belowCatSection)): ?>
-        <div class="ps-home-ads">
-            <div class="ps-container">
-                <div class="row">
-                    <?php
-                    $longImg = $belowCatSection[0];
-                    $shortImg = $belowCatSection[1] ?? '';
-                    ?>
-                    <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12 ">
-                        <a class="ps-collection" href="#">
-                            <img width="1090px" height="245px" src="<?= Sh_Link('upload/banners/'.$longImg) ?>" alt="">
-                        </a>
-                    </div>
-
-                    <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 ">
-                        <a class="ps-collection" href="#">
-                            <img width="530px" height="245px" src="<?= Sh_Link('upload/banners/'.$shortImg) ?>" alt="">
-                        </a>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    <?php endif; ?>
-
-    <?php if($sh['config']['event_status'] == 1): ?>
-        <div class="ps-download-app">
-            <div class="ps-container">
-                <div class="ps-block--download-app">
-                    <div class="container">
-                        <div class="row">
-
-                            <?php if (!empty($eventImage)): ?>
-                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 ">
-                                    <div class="ps-block__thumbnail">
-                                        <img width="487px" height="379px" src="<?= Sh_Link($eventImage) ?>" alt="">
-                                    </div>
-                                </div>
-                            <?php endif; ?>
-
-                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 ">
-                                <div class="ps-block__content">
-                                    <h3><?= $sh['config']['home_event_title'] ?></h3>
-                                    <p><?= $sh['config']['home_event_description'] ?></p>
-                                    <?php if ($sh['config']['homepage_event_input'] == 1): ?>
-                                        <form class="ps-form--download-app" id="submitnewsletter_form2" method="post">
-                                            <div class="form-group--nest">
-                                                <a href="<?= $sh['config']['home_event_link'] ?>" class="ps-btn"><?= $sh['config']['home_event_button'] ?></a>
-                                            </div>
-                                        </form>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    <?php endif; ?>
-    <?= Sh_LoadPage('newsletter/content') ?>
-
+</div>

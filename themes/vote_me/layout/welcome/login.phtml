@@ -1,54 +1,46 @@
-<div class="ps-page--my-account">
+<div class="login-cont">
 
-    <div class="ps-my-account">
-        <div class="container">
-            <form class="ps-form--account ps-tab-root mt-0 py-5 g-0" id="login_user" method="post" autocomplete="off">
-                <ul class="ps-tab-list">
-                    <li class="active"><a href="#">Login</a></li>
-                </ul>
-                <div class="ps-tabs">
-                    <div class="ps-tab active mainlogin" id="sign-in">
+    <div class="login">
+        <div class="left">
+            <div class="over-1"></div>
+            <div class="over-2"></div>
+            <div class="over-3"></div>
+            <!-- login image -->
 
-                        <div class="valign tag_auth_animation hidden">
-                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 367.805 367.805" xml:space="preserve"> <g> <path style="fill:#3BB54A;" d="M183.903,0.001c101.566,0,183.902,82.336,183.902,183.902s-82.336,183.902-183.902,183.902 S0.001,285.469,0.001,183.903l0,0C-0.288,82.625,81.579,0.29,182.856,0.001C183.205,0,183.554,0,183.903,0.001z"/> <polygon style="fill:#fff;" points="285.78,133.225 155.168,263.837 82.025,191.217 111.805,161.96 155.168,204.801 256.001,103.968"/> </g></svg>
-                            <?php echo $sh['lang']['successfully_joined_label'] ?>
-                        </div>
+            <h1 class="greet">Welcome To</h1>
 
-                        <div class="ps-form__content">
-                            <h5>Log In Your Account</h5>
+            <div class="identity">
+                <img src="../images/no-bg-logo.png" alt="">
+                <h2>Momudu University</h2>
+            </div>
 
-                            <div class="de elHeadlineWrapper" id="tmp_subheadline-10287-108" data-de-type="headline" data-de-editing="false" data-title="sub-headline" data-ce="true" data-trigger="none" data-animate="fade" data-delay="500" data-gramm="false" style="margin-top: 10px; outline: none; cursor: pointer;" aria-disabled="false">
-                                <div class="errors"></div>
-                                <div class="success"></div>
-                            </div>
+        </div>
+        <div class="right">
 
-                            <div class="form-group">
-                                <input class="form-control" id="username" name="username" type="text" placeholder="Username or email address">
-                            </div>
-                            <div class="form-group form-forgot">
-                                <input class="form-control" id="password" name="password" type="password" placeholder="Password"><a href="<?= Sh_Link('forgot-password') ?>">Forgot?</a>
-                            </div>
-                            <div class="form-group">
-                                <div class="ps-checkbox">
-                                    <input class="form-control" type="checkbox" id="remember-me" name="remember-me" />
-                                    <label for="remember-me">Rememeber me</label>
-                                </div>
-                            </div>
-                            <div class="form-group submtit">
-                                <button type="submit" class="ps-btn disable_btn ps-btn--fullwidth"><?php echo $sh['lang']['login']?></button>
-                            </div>
-                        </div>
-                        <br>
-                        <?php if(1>2):?>
-                        <?= Sh_LoadPage('login-with/show-icons') ?>
-                        <?php endif; ?>
-                    </div>
+            <div class="title">
+                <h2>Login.</h2>
+            </div>
+
+            <div class="over-4"></div>
+
+            <!-- login form -->
+            <form action="#">
+                
+                <div class="form-group">
+                    <label for="matric-no">Matric Number</label>
+                    <input type="text" name="" id="matric-no">
+                </div>
+                <div class="form-group">
+                    <label for="matric-no">Password</label>
+                    <input type="password" name="" id="matric-no">
+                </div>
+                <div class="form-group">
+                    <button class="btn" type="submit">Login</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-<?= Sh_LoadPage('newsletter/content') ?>
 
 <script>
     // LOGIN
