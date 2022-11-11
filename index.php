@@ -47,6 +47,9 @@ if ($sh['loggedin'] == true) {
         case 'login':
             include('routes/login.php');
             break;
+        case 'logout':
+            include('routes/logout.php');
+            break;
 
     }
 
@@ -61,6 +64,9 @@ if ($sh['loggedin'] == true) {
             break;
         case 'login':
             include('routes/login.php');
+            break;
+        case 'logout':
+            include('routes/logout.php');
             break;    
     }
 

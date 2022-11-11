@@ -59,10 +59,6 @@ function Sh_UserData($user_id, $password = true) {
        unset($fetched_data['password']);
    }
    $fetched_data['avatar_org'] = $fetched_data['avatar'];
-   $fetched_data['cover_org']  = $fetched_data['cover'];
-   $explode2                   = @end(explode('.', $fetched_data['cover']));
-   $explode3                   = @explode('.', $fetched_data['cover']);
-
    $explode2                   = @end(explode('.', $fetched_data['avatar']));
    $explode3                   = @explode('.', $fetched_data['avatar']);
 

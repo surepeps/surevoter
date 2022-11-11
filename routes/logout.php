@@ -1,11 +1,4 @@
 <?php
-/**
- * betasouk
- * Created by SureCoder
- * FILE NAME: logout.php
- * YEAR: 2022
- */
-
 
 session_unset();
 if (!empty($_SESSION['user_id'])) {
@@ -22,5 +15,5 @@ if (isset($_COOKIE['user_id'])) {
 }
 $_SESSION = array();
 unset($_SESSION);
-header("Location: " . $sh['config']['site_url']);
+header("Location: " . $sh['config']['site_url'].'/login');
 exit();

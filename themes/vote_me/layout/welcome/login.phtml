@@ -10,7 +10,7 @@
             <h1 class="greet">Welcome To</h1>
 
             <div class="identity">
-                <img src="../images/no-bg-logo.png" alt="">
+                <img src="<?= $sh['config']['site_url'] ?>/uploads/others/no-bg-logo.png" alt="">
                 <h2>Momudu University</h2>
             </div>
 
@@ -24,19 +24,24 @@
             <div class="over-4"></div>
 
             <!-- login form -->
-            <form action="#">
+            <form id="login_user" data-parsley-validate="data-parsley-validate" data-parsley-excluded="input[type=button], input[type=submit], input[type=reset], input[type=hidden], :disabled, :hidden" method="POST">
+
+                <div class="errors"></div>
                 
-                <div class="form-group">
-                    <label for="matric-no">Matric Number</label>
-                    <input type="text" name="" id="matric-no">
+                <div id="hs">
+                    <div class="form-group">
+                        <label for="matric-no">Matric Number</label>
+                        <input required type="text" name="username" id="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input required type="password" name="password" id="password">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn" type="submit">Login</button>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="matric-no">Password</label>
-                    <input type="password" name="" id="matric-no">
-                </div>
-                <div class="form-group">
-                    <button class="btn" type="submit">Login</button>
-                </div>
+                
             </form>
         </div>
     </div>
@@ -47,20 +52,24 @@
     var working = false;
     var $this = $('#login_user');
     var $state = $this.find('.errors');
-    var $login_anim = $('.tag_auth_animation');
+    var $login_anim = $('#hs');
 
     $(function() {
+
+        $this.parsley();
 
         $this.ajaxForm({
             url: Sh_Ajax_Requests_File() + '?f=login',
             beforeSend: function () {
                 working = true;
+                $this.parsley().validate();
                 $this.find('.disable_btn').attr("disabled", true);
                 run_waitMe($('#loader'), 1, 'win8');
             },
             success: function (data) {
                 if (data.status == 200 || data.status == 600) {
-                    $login_anim.removeClass('hidden');
+                    $state.removeClass('alert alert-danger').addClass('alert alert-success').html(data.message);
+                    $login_anim.hide(500);
                     setTimeout(function () {
                         window.location.href = data.location;
                     }, 1000);
