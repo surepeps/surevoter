@@ -1133,6 +1133,40 @@ body .main{
         z-index: 9999;
     }
 
+    /* Logged In styling */
+   .main .nav .menu ul .has-sub {
+        float: left;
+        overflow: hidden;
+    }
+
+    .main .nav .menu ul .has-sub .sub-menu {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        right: 10px;
+        border-radius: 2px;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+    }
+
+    .main .nav .menu ul .has-sub .sub-menu a {
+        float: none;
+        color: var(--primary-color-two);
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        text-align: left;
+    }
+
+    .main .nav .menu ul .has-sub .sub-menu a:hover {
+        background-color: #ddd;
+    }
+
+    .main .nav .menu ul .has-sub:hover .sub-menu {
+        display: block;
+    }
+
     .main .nav .logo{
         position: absolute;
         left: 0;
