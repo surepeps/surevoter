@@ -82,13 +82,13 @@ body .main{
     display: none;
 }
 
-.main .nav .menu ul{
+.main .nav .menu .menu-list{
     display: flex;
     justify-content: space-between;
     gap: 70px;   
 }
 
-.main .nav .menu ul li a{
+.main .nav .menu .menu-list li a{
     color: var(--text-color-one);
     font-size: 1.1rem;
 }
@@ -152,7 +152,7 @@ body .main{
         margin-top: 8px;
     }
 
-    .main .nav .menu ul{
+    .main .nav .menu .menu-list{
         transition: all 1s linear;
         display: none;
     }
@@ -167,7 +167,7 @@ body .main{
         opacity: 0;
     }
 
-    .main .nav input[type=checkbox]:checked ~ .menu ul{
+    .main .nav input[type=checkbox]:checked ~ .menu .menu-list{
         width: 100%;
         min-height: 200px;
         padding: 20px;
@@ -211,6 +211,39 @@ body .main{
         transition: .4s ease-in-out;
     }
 
+
+    /* Logged In styling */
+   .main .nav .menu .menu-list .has-sub {
+        float: left;
+        overflow: hidden;
+    }
+
+    .main .nav .menu .menu-list .has-sub .sub-menu {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        border-radius: 2px;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+    }
+
+    .main .nav .menu .menu-list .has-sub .sub-menu a {
+        float: none;
+        color: var(--primary-color-two);
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        text-align: left;
+    }
+
+    .main .nav .menu .menu-list .has-sub .sub-menu a:hover {
+        background-color: #ddd;
+    }
+
+    .main .nav .menu .menu-list .has-sub:hover .sub-menu {
+        display: block;
+    }
 
     /* hero section  */
     .main .hero{
@@ -676,7 +709,7 @@ body .main{
         margin-top: 8px;
     }
 
-    .main .nav .menu ul{
+    .main .nav .menu .menu-list{
         transition: all 1s linear;
         display: none;
     }
@@ -691,7 +724,7 @@ body .main{
         opacity: 0;
     }
 
-    .main .nav input[type=checkbox]:checked ~ .menu ul{
+    .main .nav input[type=checkbox]:checked ~ .menu .menu-list{
         width: 100%;
         min-height: 350px;
         padding: 20px;
@@ -738,12 +771,12 @@ body .main{
 
 
     /* Logged In styling */
-   .main .nav .menu ul .has-sub {
+   .main .nav .menu .menu-list .has-sub {
         float: left;
         overflow: hidden;
     }
 
-    .main .nav .menu ul .has-sub .sub-menu {
+    .main .nav .menu .menu-list .has-sub .sub-menu {
         display: none;
         position: absolute;
         background-color: #f9f9f9;
@@ -753,20 +786,20 @@ body .main{
         z-index: 1;
     }
 
-    .main .nav .menu ul .has-sub .sub-menu a {
+    .main .nav .menu .menu-list .has-sub .sub-menu a {
         float: none;
-        color: white;
+        color: var(--primary-color-two);
         padding: 12px 16px;
         text-decoration: none;
         display: block;
         text-align: left;
     }
 
-    .main .nav .menu ul .has-sub .sub-menu a:hover {
+    .main .nav .menu .menu-list .has-sub .sub-menu a:hover {
         background-color: #ddd;
     }
 
-    .main .nav .menu ul .has-sub:hover .sub-menu {
+    .main .nav .menu .menu-list .has-sub:hover .sub-menu {
         display: block;
     }
 
@@ -2114,10 +2147,10 @@ body .main{
        width: 100%;
        height: 90px;  
        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 9999;
+       top: 0;
+       left: 0;
+       right: 0;
+       z-index: 9999;
    }
 
    /* Logged In styling */
