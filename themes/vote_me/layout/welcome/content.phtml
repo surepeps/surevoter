@@ -12,7 +12,7 @@
        background-position: 50% 50%;
        background-size: cover;
    }
-</style>
+</style> 
 
 
 <!-- Hero section --> 
@@ -35,82 +35,36 @@
             <h3 class="cc-title">Annual Student Body Election is Ongoing</h3>
             <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nihil nisi repellendus distinctio fugit, dolores facilis modi ab exercitationem excepturi perferendis.</p>
         </div>
+
+
+        <?php
+            $postsList = getPosts(2);
+            foreach($postsList as $PL){
+        ?>
+
         <div class="cards">
-            <div class="card-title">President <label for="">Faculty of Science</label></div>
+            <div class="card-title"><?= $PL['title'] ?><label for=""> <?= $PL['location'] ?></label></div>
             <div class="all-cards">
+                <?php 
+                    $cands = getCandidates(3, $PL['post_id']);
+                    foreach($cands as $cd){
+                    $candData = Sh_UserData($cd['user_id']);
+                ?>
                 <!-- Single card -->
                 <div class="card">
                     <div class="img">
                         <img src="<?= $sh['config']['site_url'] ?>/uploads/others/contenst-1.png" alt="">
                     </div>
                     <div class="desc">
-                        <h3 class="name">Hassan Tijani.A</h3>
-                        <p class="dep">400lv, ZLY</p>
+                        <h3 class="name"><?= $candData['name'] ?></h3>
+                        <p class="dep"><?= $candData['level'] ?>, ZLY</p>
                     </div>
                 </div>
-
-                <!-- Single card -->
-                <div class="card">
-                    <div class="img">
-                        <img src="<?= $sh['config']['site_url'] ?>/uploads/others/contenst-1.png" alt="">
-                    </div>
-                    <div class="desc">
-                        <h3 class="name">Hassan Tijani.A</h3>
-                        <p class="dep">400lv, ZLY</p>
-                    </div>
-                </div>
-
-                <!-- Single card -->
-                <div class="card">
-                    <div class="img">
-                        <img src="<?= $sh['config']['site_url'] ?>/uploads/others/contenst-1.png" alt="">
-                    </div>
-                    <div class="desc">
-                        <h3 class="name">Hassan Tijani.A</h3>
-                        <p class="dep">400lv, ZLY</p>
-                    </div>
-                </div>
+                <?php } ?>
             </div>
             
         </div>
 
-        <div class="cards">
-            <div class="card-title">President <label for="">Faculty of Science</label></div>
-            <div class="all-cards">
-                <!-- Single card -->
-                <div class="card">
-                    <div class="img">
-                        <img src="<?= $sh['config']['site_url'] ?>/uploads/others/contenst-1.png" alt="">
-                    </div>
-                    <div class="desc">
-                        <h3 class="name">Hassan Tijani.A</h3>
-                        <p class="dep">400lv, ZLY</p>
-                    </div>
-                </div>
-
-                <!-- Single card -->
-                <div class="card">
-                    <div class="img">
-                        <img src="<?= $sh['config']['site_url'] ?>/uploads/others/contenst-1.png" alt="">
-                    </div>
-                    <div class="desc">
-                        <h3 class="name">Hassan Tijani.A</h3>
-                        <p class="dep">400lv, ZLY</p>
-                    </div>
-                </div>
-
-                <!-- Single card -->
-                <div class="card">
-                    <div class="img">
-                        <img src="<?= $sh['config']['site_url'] ?>/uploads/others/contenst-1.png" alt="">
-                    </div>
-                    <div class="desc">
-                        <h3 class="name">Hassan Tijani.A</h3>
-                        <p class="dep">400lv, ZLY</p>
-                    </div>
-                </div>
-            </div>
-            
-        </div>
+        <?php } ?>
     </div>
 </div>

@@ -1,11 +1,4 @@
 <?php
-/**
- * essential-master
- * Created by SureCoder
- * FILE NAME: 404.php
- * YEAR: 2022
- */
-
 
 header("HTTP/1.0 404 Not Found");
 $sh['description'] = '';

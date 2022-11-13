@@ -67,6 +67,12 @@ function Sh_UserData($user_id, $password = true) {
    $fetched_data['user_platform'] = Sh_GetPlatformFromUser_ID($fetched_data['user_id']);
    $fetched_data['type']   = 'user';
 
+
+    // Level compilation
+    if ($fetched_data['level'] > 0 && $fetched_data['level'] <= 5) {
+        $fetched_data['level'] = $fetched_data['level']."00LV";
+    }    
+
    $fetched_data['name']   = '';
 
    if (!empty($fetched_data['first_name'])) {
@@ -573,3 +579,61 @@ function insertRow($table, $options){
     return mysqli_query($sqlConnect, $query);
 }
 
+
+
+/**
+ * 
+ * SELECT POSTS AND CADIDATE 
+ * 
+ */
+
+function getPosts($limit = 2, $cond = "`status` = 1"){
+    global $sh, $sqlConnect;
+
+    $newCond = "";
+    $newArr = [];
+
+    if (!empty($cond)) {
+       $newCond = "WHERE ". $cond;
+    }
+
+    $nlimit = "LIMIT ". $limit;
+    if (!is_numeric($limit)) {
+        $nlimit = '';
+    }
+
+    $queryfilter = mysqli_query($sqlConnect,"SELECT * FROM " . T_POSTS_T . " ".$newCond. " ". $nlimit);
+    while ($resultArr = mysqli_fetch_assoc($queryfilter)) {
+        $newArr[] = $resultArr;
+    }
+
+    return $newArr;
+}
+
+
+function getCandidates($limit = "all", $post_id, $cond = "`status` = 1"){
+    global $sqlConnect;
+
+    $newCond = "WHERE ";
+    $newArr = [];
+
+    if (is_numeric($post_id) && $post_id > 0) {
+        $newCond .= " `post_id` = ".$post_id ." AND ";
+    }
+
+    if (!empty($cond)) {
+       $newCond .= $cond;
+    }
+
+    $nlimit = 'LIMIT '. $limit;
+    if (!is_numeric($limit)) {
+        $nlimit = '';
+    }
+
+    $queryfilter = mysqli_query($sqlConnect,"SELECT * FROM " . T_CANDI_T . " ".$newCond. " ".$nlimit);
+    while ($resultArr = mysqli_fetch_assoc($queryfilter)) {
+        $newArr[] = $resultArr;
+    }
+
+    return $newArr;
+}

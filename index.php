@@ -50,6 +50,9 @@ if ($sh['loggedin'] == true) {
         case 'logout':
             include('routes/logout.php');
             break;
+        case 'vote':
+            include('routes/vote.php');
+            break;
 
     }
 
@@ -67,7 +70,10 @@ if ($sh['loggedin'] == true) {
             break;
         case 'logout':
             include('routes/logout.php');
-            break;    
+            break;  
+        case 'vote':
+            include('routes/vote.php');
+            break;  
     }
 
 }
