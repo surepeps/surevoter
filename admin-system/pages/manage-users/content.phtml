@@ -1,0 +1,112 @@
+<div class="content-wrapper">
+    <div class="row">
+        
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Manage Users</h4>
+                <p class="card-description"> Basic form elements</p>
+                <div class="col-12">
+                <div class="table-responsive">
+                  <div class="search float-end mb-5">
+                      <input type="text" class="form-control" placeholder="Search For User" id="keywords">
+
+                      <div class="form-group">
+                        <select name="" id="" class="form-control"> 
+                          <option value="1">100LV</option>
+                          <option value="2">200LV</option>
+                          <option value="3">300LV</option>
+                          <option value="4">400LV</option>
+                          <option value="5">500LV</option>
+                        </select>
+
+                        <select name="" id="filterByVoteStatus" class="form-control">
+                          <option value="">Show All</option>
+                          <option value="voteed">Voted</option>
+                          <option value="not_voted">Not Voted</option>
+                        </select>
+                      </div>
+                  </div>
+
+                  <div id="all-datas">
+                    <table class="table table-striped table-hover">
+                      <thead>
+                        <tr>
+                          <th scope="col">User</th>
+                          <th scope="col">Matric No</th>
+                          <th scope="col">Full Name</th>
+                          <th scope="col">Level</th>
+                          <th scope="col">Vote Status</th>
+                          <th scope="col">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <?php 
+                          $allUsers = getallUserAccountData();
+                          foreach($allUsers as $aus){
+                        ?>
+                          <tr>
+                            <td class="py-1">
+                              <img src="<?= $aus['avatar'] ?>" alt="image"/>
+                            </td>
+                            <td><?= $aus['username'] ?></td>
+                            <td><?= $aus['name'] ?></td>
+                            <td><?= $aus['level'] ?></td>
+                            <td><?= ($aus['vote_status'] == 1) ? '<p class="badge badge-success">Voted</p>' : '<p class="badge badge-success">Not Yet</p>' ?></td>
+                            <td>
+                              <a href="">
+                                <i class="mdi mdi-settings text-primary"></i>
+                              </a>
+                              &nbsp; &nbsp;
+                              <a href="<?= Sh_Link('edit-user/'. $aus['user_id']) ?>=">
+                                <i class="mdi mdi-grease-pencil text-primary"></i>
+                              </a>
+                            </td>
+                          </tr>
+                        <?php } ?>
+                        
+                      </tbody>
+                    </table>
+
+                    <?php echo $pagination->createLinks(); ?>
+                  </div>
+                    
+                  </div>
+                </div>
+            </div>
+            </div>
+        </div>
+       
+    </div>
+</div>
+
+<script>
+  // search for Accounts
+  function searchProductsFilter(page_num) {
+        page_num = page_num ? page_num : 0;
+
+        //Mode filtering
+        let filterByMode = $('#filterByVoteStatus').val();
+
+        let keywords;
+
+        if($('#keywords').val() != ""){
+            keywords = $('#keywords').val();
+        }else{
+            keywords = "";
+        }
+
+
+        $.ajax({
+            type: 'POST',
+            url: Sh_Ajax_Requests_File() + '?f=account&s=account_search',
+            data:'page='+page_num+'&keywords='+keywords+'&filterByVote='+filterByMode,
+            beforeSend: function () {
+                $("#all-datas").html("<img style='display: flex; width: 50%; height: 50%; justify-content: center; margin: 20px auto;' src='https://i.gifer.com/ZZ5H.gif'>");
+            },
+            success: function (html) {
+                $('#all-datas').html(html);
+            }
+        });
+    } 
+</script>

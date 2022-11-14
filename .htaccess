@@ -6,10 +6,10 @@ RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R,L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
-RewriteRule ^admin-cpanel$ page_router/admincpanel.php [NC,QSA]
-RewriteRule ^admin-cpanel/(.*)$  page_router/admincpanel.php?page=$1 [NC,QSA]
-RewriteRule ^admincpanel$  page_router/admincpanel.php [NC,QSA]
-RewriteRule ^admincpanel/(.*)$  page_router/admincpanel.php?page=$1 [NC,QSA]
+RewriteRule ^admin-cpanel$ routes/admincpanel.php [NC,QSA]
+RewriteRule ^admin-cpanel/(.*)$  routes/admincpanel.php?page=$1 [NC,QSA]
+RewriteRule ^admincpanel$  routes/admincpanel.php [NC,QSA]
+RewriteRule ^admincpanel/(.*)$  routes/admincpanel.php?page=$1 [NC,QSA]
 RewriteRule ^adminPages/(.*)$ admin-panel/$1 [L]
 
 
