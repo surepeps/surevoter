@@ -1,32 +1,66 @@
+<?php
+
+
+$allUsersWithNoCond = getallUserAccountData();
+
+$rowCount = count($allUsersWithNoCond);
+
+$baseURL = $sh['config']['site_url'].'f=account&s=account_search';
+
+$limit = 10;
+
+// Initialize pagination class
+$pagConfig = array(
+    'baseURL' => $baseURL,
+    'totalRows' => $rowCount,
+    'perPage' => $limit,
+    'contentDiv' => 'all-datas',
+    'link_func' => 'searchDatasFilter'
+);
+
+$pagination =  new AdminPagination($pagConfig);
+
+$allUsers = getallUserAccountData("LIMIT $limit");
+
+
+?>
+
+
 <div class="content-wrapper">
     <div class="row">
         
         <div class="col-12 grid-margin stretch-card">
             <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">Manage Users</h4>
-                <p class="card-description"> Basic form elements</p>
-                <div class="col-12">
-                <div class="table-responsive">
-                  <div class="search float-end mb-5">
-                      <input type="text" class="form-control" placeholder="Search For User" id="keywords">
-
-                      <div class="form-group">
-                        <select name="" id="" class="form-control"> 
+            <header class="card-header">
+              <h4 class="card-title">Manage Users</h4>
+              <p class="card-description"> Manage all Users account here</p>
+              <div class="row gx-3">
+                  <div class="col-lg-4 col-md-6 me-auto">
+                      <input onkeyup="searchDatasFilter();" id="keywords" name="keywords" type="text" placeholder="Search By Name, Matric No" class="form-control">
+                  </div>
+                  <div class="col-lg-2 col-6 col-md-3">
+                      <select onchange="searchDatasFilter()" id="filterByVoteStatus" name="filterByVoteStatus" class="form-select">
+                          <option value="" disabled>Status</option>
+                          <option value="all">Show All</option>
+                          <option value="voted">Voted</option>
+                          <option value="not_voted">Not Voted</option>
+                      </select>
+                  </div>
+                  <div class="col-lg-2 col-6 col-md-3">
+                      <select onchange="searchDatasFilter()" id="filterByLevel" name="filterByLevel" class="form-select">
+                          <option value="all">Show All</option>    
                           <option value="1">100LV</option>
                           <option value="2">200LV</option>
                           <option value="3">300LV</option>
                           <option value="4">400LV</option>
                           <option value="5">500LV</option>
-                        </select>
-
-                        <select name="" id="filterByVoteStatus" class="form-control">
-                          <option value="">Show All</option>
-                          <option value="voteed">Voted</option>
-                          <option value="not_voted">Not Voted</option>
-                        </select>
-                      </div>
+                      </select>
                   </div>
+              </div>
+          </header>
+            <div class="card-body">
+                <div class="col-12">
+                <div class="table-responsive">
 
                   <div id="all-datas">
                     <table class="table table-striped table-hover">
@@ -42,7 +76,6 @@
                       </thead>
                       <tbody>
                         <?php 
-                          $allUsers = getallUserAccountData();
                           foreach($allUsers as $aus){
                         ?>
                           <tr>
@@ -67,7 +100,7 @@
                         
                       </tbody>
                     </table>
-
+                    <br>
                     <?php echo $pagination->createLinks(); ?>
                   </div>
                     
@@ -82,11 +115,13 @@
 
 <script>
   // search for Accounts
-  function searchProductsFilter(page_num) {
+  function searchDatasFilter(page_num) {
         page_num = page_num ? page_num : 0;
 
         //Mode filtering
-        let filterByMode = $('#filterByVoteStatus').val();
+        
+        let filterByVS = $('#filterByVoteStatus').val();
+        let filterByLevel = $('#filterByLevel').val();
 
         let keywords;
 
@@ -96,13 +131,12 @@
             keywords = "";
         }
 
-
         $.ajax({
             type: 'POST',
             url: Sh_Ajax_Requests_File() + '?f=account&s=account_search',
-            data:'page='+page_num+'&keywords='+keywords+'&filterByVote='+filterByMode,
+            data:'page='+page_num+'&keywords='+keywords+'&filterByVote='+filterByVS+'&filterByLevel='+filterByLevel,
             beforeSend: function () {
-                $("#all-datas").html("<img style='display: flex; width: 50%; height: 50%; justify-content: center; margin: 20px auto;' src='https://i.gifer.com/ZZ5H.gif'>");
+                $("#all-datas").html("<img style='display: flex; width: 30%; height: 30%; justify-content: center; margin: 20px auto;' src='https://i.gifer.com/ZZ5H.gif'>");
             },
             success: function (html) {
                 $('#all-datas').html(html);

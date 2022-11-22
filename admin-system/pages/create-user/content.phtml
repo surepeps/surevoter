@@ -1,0 +1,208 @@
+<div class="content-wrapper">
+    <div class="row">
+
+        <form enctype="multipart/form-data" class="row" data-parsley-validate="data-parsley-validate" data-parsley-excluded="input[type=button], input[type=submit], input[type=reset], input[type=hidden], :disabled, :hidden" id="addUserForm" method="post">
+            <div class="col-12">
+                <div class="content-header">
+                    <h2 class="content-title">Add New User</h2>
+                    <div class="float-end">
+                        <button type="submit" id="add_page_btn7" class="btn btn-primary">Publish</button>
+                    </div>
+                </div>
+            </div>
+
+        
+            <div class="col-lg-7">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="float-start">User Details</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">First Name</label>
+                            <input type="text" placeholder="First Name" required="required" name="first_name" class="form-control" id="first_name">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Last Name</label>
+                            <input type="text" placeholder="Last Name" required="required" name="last_name" class="form-control" id="last_name">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Midde Name (optional)</label>
+                            <input type="text" placeholder="Middle Name" name="middle_name" class="form-control" id="middle_name">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Matric Number</label>
+                            <input type="text" placeholder="Matric Number" required="required" name="matric_no" class="form-control" id="matric_no">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Level</label>
+                            <select name="" id="level" name="level" class="form-control">
+                                <option value="1">100LV</option>
+                                <option value="2">200LV</option>
+                                <option value="3">300LV</option>
+                                <option value="4">400LV</option>
+                                <option value="5">500LV</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Phone Number (optional)</label>
+                            <input type="text" placeholder="Type here" name="phone_number" class="form-control" id="page_keywords">
+                        </div>
+
+                    </div>
+                </div> <!-- card end// -->
+            </div>
+            <div class="col-lg-5">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="float-start">User Profile Image</h4>
+                    </div>
+                    <div class="card-body">
+                        <label>Image</label> (One Image is allowed)
+                        <div id="mydropzone" class="dropzone dz-clickable"></div>
+                        <input type="hidden" name="user_id" id="user_id" value="<?= $sh['user']['user_id'] ?>">
+                        <input type="hidden" value="page_<?= Sh_GenerateKey(4, 10, false, false, true, false) ?>" name="pagecode" id="pagecode" />
+                        <br>
+                    </div>
+                </div> <!-- card end// -->
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+
+
+<script>
+    let base_url = "<?= $sh['site_url']  ?>";
+    let api_path = "/api/xhr_api";
+    let new_base_url = base_url+api_path+'/upload_pictures.php';
+
+    $(function() {
+        $('#add_product').parsley();
+
+        $(".dropzone").disableSelection();
+    });
+
+    //Dropzone script for Page images start here
+    Dropzone.autoDiscover = false;
+    var pro_code_n = jQuery("#pagecode").val();
+    var myDropzone = new Dropzone("div#mydropzone", {
+        addRemoveLinks: true,
+        autoProcessQueue: true,
+        parallelUploads: 1,
+        maxFilesize: 3, // MB
+        acceptedFiles: ".png, .jpeg, .jpg, .gif",
+        url: new_base_url,
+        renameFile: function(file) {
+            return file.name = pro_code_n + '_' + file.name;
+        },
+
+    });
+
+
+    /*Ans code*/
+    myDropzone.on("sending", function(file, xhr, formData) {
+
+        formData.append("pagecode", jQuery("#pagecode").val());
+        formData.append("user_id", jQuery("#user_id").val());
+        formData.append("action", "upload_page_imgs");
+
+    });
+
+    /* Rename Code */
+
+    /* Add Files Script*/
+    myDropzone.on("success", function(file, message) {
+        $("#msg").html(message);
+    });
+
+    myDropzone.on("error", function(data) {
+        $("#msg").html('<div class="alert alert-danger">There is some thing wrong, Please try again!</div>');
+    });
+
+    myDropzone.on("complete", function(file) {
+        //myDropzone.removeFile(file);
+    });
+
+    myDropzone.on('removedfile', function (file){
+        var pro_code_n = jQuery("#pagecode").val();
+        var user_n_id = jQuery("#user_id").val();
+
+        var name = pro_code_n+'_'+file.name;
+
+        $.ajax({
+            type: "POST",
+            url: new_base_url,
+            data: {
+                action: "delete_page_imgs",
+                fileName: name,
+                pro_code: pro_code_n,
+                user_id: user_n_id,
+                delete_file: 1
+            }
+        });
+    });
+    //Dropzone script for property images ends here
+
+
+    /**
+     *
+     *  Page Name converted to slugify
+     *
+     */
+    $("#page_slug").sureslugy("#page_name");
+
+
+    /**
+     *
+     * Add new Page with scripts
+     *
+     */
+
+    $(function() {
+
+
+        // create User
+        var form_createuser = $('form#addUserForm');
+        form_createuser.ajaxForm({
+            url: Sh_Ajax_Requests_File() + '?f=account&s=add_new_users',
+            beforeSend: function() {
+                $('#addUserForm').parsley().validate();
+                run_waitMe($('#loader'), 1, 'win8');
+                form_createuser.find('.disable_tbn').attr('disabled', true);
+            },
+            success: function(data) {
+
+                $('#loader').waitMe('hide');
+
+                $("html, body").animate({scrollTop: 0}, 150);
+
+                if (data.status == 200) {
+
+                    sureNotify(1, data.message);
+
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 2000);
+
+                } else {
+
+                    sureNotify(0, data.message);
+                    form_createuser.find('.disable_tbn').attr('disabled', false);
+
+                }
+            }
+        });
+
+
+    });
+
+</script>
+

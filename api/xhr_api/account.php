@@ -144,17 +144,35 @@ if ($f == "account"){
         $whereBy = "";
 
         if (isset($_POST['filterByVote'])) {
-            $filterBy = $_POST['filterByVote'];
-            if ($filterBy == "voteed"){
-                $whereBy = " AND status = 1";
-            }else if($filterBy == "not_voted"){
-                $whereBy = "AND status = 0";
-            }else if($filterBy == "all"){
-                $whereBy = "AND (status = 0 OR status = 1 OR status = 2)";
+            $filterByV = Sh_Secure($_POST['filterByVote']);
+            if ($filterByV == "voted"){
+                $whereBy .= " AND `vote_status` = 1";
+            }else if($filterByV == "not_voted"){
+                $whereBy .= " AND `vote_status` = 0";
+            }else if($filterByV == "all"){
+                $whereBy .= " AND (`vote_status` = 0 OR `vote_status` = 1 OR `vote_status` = 2)";
             }
         }
 
-        $orderBy = "user_id DESC";
+
+        if (isset($_POST['filterByLevel'])) {
+            $filterByLevel = Sh_Secure($_POST['filterByLevel']);
+            if ($filterByLevel == "1"){
+                $whereBy .= " AND `level` = 1";
+            }else if($filterByLevel == "2"){
+                $whereBy .= " AND `level` = 2";
+            }else if($filterByLevel == "3"){
+                $whereBy .= " AND `level` = 3";
+            }else if($filterByLevel == "4"){
+                $whereBy .= " AND `level` = 4";
+            }else if($filterByLevel == "5"){
+                $whereBy .= " AND `level` = 5";
+            }else if($filterByLevel == "all"){
+                $whereBy .= " AND (`level` = 0 OR`level` = 1 OR `level` = 2 OR `level` = 3 OR `level` = 4 OR `level` = 5)";
+            }
+        }
+
+        $orderBy = "`username` DESC";
 
         $baseURL = $sh['config']['site_url'].'f=account&s=account_search';
 
@@ -179,7 +197,7 @@ if ($f == "account"){
             'perPage' => $perPage,
             'currentPage' => $start,
             'contentDiv' => 'all-datas',
-            'link_func' => 'searchProductsFilter'
+            'link_func' => 'searchDatasFilter'
         );
 
 
@@ -226,9 +244,9 @@ if ($f == "account"){
                 
                 </tbody>
             </table>
-
+            <br>
             <?php echo $pagination->createLinks(); ?>
-            
+
         <?php }else{ ?>
 
             <div class="col-xl-12 col-md-12 col-sm-12">

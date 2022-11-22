@@ -13,10 +13,10 @@ class AdminPagination
     var $perPage = 10;
     var $numLinks = 3;
     var $currentPage = 0;
-    var $firstLink = '<i class="fa fa-arrow-left"></i>';
-    var $nextLink = '<i class="material-icons md-chevron_right"></i>';
-    var $prevLink = '<i class="material-icons md-chevron_left"></i>';
-    var $lastLink = '<i class="fa fa-arrow-right"></i>';
+    var $firstLink = '<i class="mdi mdi-chevron-double-left"></i>';
+    var $nextLink = '<i class="mdi mdi-arrow-right"></i>';
+    var $prevLink = '<i class="mdi mdi-arrow-left"></i>';
+    var $lastLink = '<i class="mdi mdi-chevron-double-right"></i>';
     var $fullTagOpen = '<div class="pagination-area mt-15 mb-50"><nav aria-label="Page navigation example"><ul class="pagination justify-content-start">';
     var $fullTagClose = '</ul></nav></div>';
     var $firstTagOpen = '';

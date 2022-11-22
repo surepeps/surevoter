@@ -7,7 +7,7 @@ $pages = array(
     'general-settings',
     'transactions',
     'site-setting',
-    'manage-users',
+    'manage-user',
     'add-product',
     'category',
     'sub-category',
@@ -19,7 +19,7 @@ $pages = array(
     'menu-settings',
     'rating-system',
     'subscribers',
-    'create-page',
+    'create-user',
     'page-list',
     'edit-page',
     'logistics',
@@ -60,7 +60,10 @@ if (empty($page_loaded)) {
     <meta name="robots" content="noindex">
     <meta name="googlebot" content="noindex">
 
-    
+
+    <script src="<?= Sh_LoadAdminLink('assets/js/jquery-3.6.0.min.js') ?>"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" defer></script>
+
     <!-- base:css -->
     <link rel="stylesheet" href="<?= Sh_LoadAdminLink('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
     <link rel="stylesheet" href="<?= Sh_LoadAdminLink('assets/vendors/base/vendor.bundle.base.css') ?>">
@@ -72,8 +75,6 @@ if (empty($page_loaded)) {
     <!-- endinject -->
     <link rel="shortcut icon" href="<?= Sh_LoadAdminLink('assets/images/favicon.png') ?>" />
 
-    <script src="<?= Sh_LoadAdminLink('assets/jquery.form.min.js') ?>"></script>
-
     <link href="<?= Sh_LoadAdminLink('assets/css/waitMe.css') ?>" rel="stylesheet" />
     <script src="<?= Sh_LoadAdminLink('assets/js/waitMe.js') ?>"></script>
 
@@ -81,6 +82,8 @@ if (empty($page_loaded)) {
     <script src="//cdnjs.cloudflare.com/ajax/libs/parsley.js/2.1.2/parsley.min.js"></script>
     <link href="https://parsleyjs.org/src/parsley.css" rel="stylesheet">
 
+
+    <script src="<?= Sh_LoadAdminLink('assets/jquery.form.min.js') ?>"></script>
 
     <script>
       function Sh_Ajax_Requests_File(){
