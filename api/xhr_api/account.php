@@ -7,40 +7,65 @@ if ($f == "account"){
 
         $first_name = Sh_Secure($_POST['first_name']);
         $last_name = Sh_Secure($_POST['last_name']);
-        $email = Sh_Secure($_POST['email']);
-        $phone = Sh_Secure($_POST['phone_number']);
-        $status = Sh_Secure($_POST['status']);
+        $middle_name = Sh_Secure($_POST['middle_name']);
+        $matric_no = Sh_Secure($_POST['matric_no']);
+        $phoneNumber = Sh_Secure($_POST['phone_number']);
+        $level = Sh_Secure($_POST['level']);
         $adminAccess = Sh_Secure($_POST['admin']);
+        $accountAccess = Sh_Secure($_POST['active']);
+        $vote_status = Sh_Secure($_POST['vote_status']);
 
         $user_id = Sh_Secure($_POST['user_id']);
 
-        $userData = array(
-           'first_name' => $first_name,
-           'last_name' => $last_name,
-           'email' => $email,
-           'phone_number' => $phone,
-           'active' => $status,
-           'status' => $status,
-           'admin' => $adminAccess
-        );
 
-        $updUser = UpdateUserData($userData, $user_id);
+        // check if title is existing already
+        $exist_matric_no = getUserExistenceForUpdate($matric_no,$user_id);
 
-        if ($updUser){
+        if ($exist_matric_no) {
 
             $data = array(
-                'status' => 200,
-                'message' => "Account ".$sh['lang']['general_update_success_message'],
+                'status' => 400,
+                'message' => $matric_no." ".$sh['lang']['found_already'],
             );
 
         }else{
 
-            $data = array(
-                'status' => 400,
-                'message' => $sh['lang']['general_update_error_message'],
+
+            $userData = array(
+                'first_name' => $first_name,
+                'last_name' => $last_name,
+                'middle_name' => $middle_name,
+                'username' => $matric_no,
+                'phone_number' => $phoneNumber,
+                'password' => $last_name,
+                'level' => $level,
+                'active' => $accountAccess,
+                'email' => '',
+                'vote_status' => $vote_status,
+                'admin' => $adminAccess,
             );
 
+            $updUser = UpdateUserData($userData, $user_id);
+
+            if ($updUser){
+
+                $data = array(
+                    'status' => 200,
+                    'message' => "Account ".$sh['lang']['general_update_success_message'],
+                );
+
+            }else{
+
+                $data = array(
+                    'status' => 400,
+                    'message' => $sh['lang']['general_update_error_message'],
+                );
+
+            }
+
+
         }
+
 
         header("Content-type: application/json");
         echo json_encode($data);
@@ -232,10 +257,10 @@ if ($f == "account"){
                         <td><?= ($aus['vote_status'] == 1) ? '<p class="badge badge-success">Voted</p>' : '<p class="badge badge-success">Not Yet</p>' ?></td>
                         <td>
                             <a href="">
-                            <i class="mdi mdi-settings text-primary"></i>
+                                <i class="mdi mdi-settings text-primary"></i>
                             </a>
                             &nbsp; &nbsp;
-                            <a href="<?= Sh_Link('edit-user/'. $aus['user_id']) ?>=">
+                            <a href="<?= Sh_Link('admin-cpanel/edit-users?user_id='. $aus['user_id']) ?>=">
                             <i class="mdi mdi-grease-pencil text-primary"></i>
                             </a>
                         </td>
@@ -262,4 +287,80 @@ if ($f == "account"){
 
     }
 
+
+    if($s == "add_new_user"){
+
+        $first_name = Sh_Secure($_POST['first_name']);
+        $last_name = Sh_Secure($_POST['last_name']);
+        $middle_name = Sh_Secure($_POST['middle_name']);
+        $matric_no = Sh_Secure($_POST['matric_no']);
+        $phoneNumber = Sh_Secure($_POST['phone_number']);
+        $level = Sh_Secure($_POST['level']);
+
+
+        $errors = false;
+        if($first_name == "" || $last_name == "" || $matric_no == ""){
+            $errors = true;
+            $data = array(
+                'status' => 400,
+                'message' => "Please fill in all required fields",
+            );
+
+        }
+
+
+        if (!$errors){
+
+            $exist_matric_no = getUserExistence($matric_no);
+
+            if ($exist_matric_no) {
+
+                $data = array(
+                    'status' => 400,
+                    'message' => $matric_no." ".$sh['lang']['found_already'],
+                );
+
+            }else {
+
+                // collect all data and process
+                $allRegdata = array(
+                    'first_name' => $first_name,
+                    'last_name' => $last_name,
+                    'middle_name' => $middle_name,
+                    'username' => $matric_no,
+                    'phone_number' => $phoneNumber,
+                    'password' => $last_name,
+                    'level' => $level,
+                    'active' => 1,
+                    'email' => '',
+                    'avatar' => ''
+                );
+
+                // save the data
+                $user_id = Sh_RegisterUser($allRegdata);
+
+                if ($user_id > 0){
+                    $data = array(
+                        'data' => 200,
+                        'message' => "Successfully done"
+                    );
+                }else{
+                    $data = array(
+                        'data' => 400,
+                        'message' => "Error While Processing your Request"
+                    );
+                }
+
+
+            }
+
+
+        }
+
+
+        header("Content-type: application/json");
+        echo json_encode($data);
+        exit();
+
+    }
 }

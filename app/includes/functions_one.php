@@ -637,3 +637,63 @@ function getCandidates($limit = "all", $post_id, $cond = "`status` = 1"){
 
     return $newArr;
 }
+
+
+
+
+/**
+ * @param $id
+ * @return bool
+ */
+function Sh_UserExistsByID($id = 0, $cond = '') {
+    global $sqlConnect;
+    if (empty($id)) {
+        return false;
+    }
+    $id    = Sh_Secure($id);
+    if ($cond != ""){
+        $query = mysqli_query($sqlConnect, "SELECT COUNT(`user_id`) FROM " . T_USERS . " WHERE `user_id`= $id AND $cond ");
+    }else{
+        $query = mysqli_query($sqlConnect, "SELECT COUNT(`user_id`) FROM " . T_USERS . " WHERE `user_id`= $id ");
+    }
+    return (Sh_Sql_Result($query, 0) == 1) ? true : false;
+}
+
+
+
+/**
+ * @param $matric_no
+ * @return bool
+ */
+function getUserExistence($matric_no){
+    global $sqlConnect;
+    if (empty($title)) {
+        return false;
+    }
+    $matric_no = Sh_Secure($matric_no);
+    $query    = mysqli_query($sqlConnect, "SELECT COUNT(`user_id`) FROM " . T_USERS . "  WHERE (`username` = '{$matric_no}' AND `username` LIKE '%{$matric_no}%') ");
+    return (Sh_Sql_Result($query, 0) == 1) ? true : false;
+}
+
+
+/**
+ * @param $matric_no
+ * @param $cat_code
+ * @param $user_id
+ * @return bool
+ */
+function getUserExistenceForUpdate($matric_no, $user_id){
+    global $sqlConnect;
+
+    if (empty($matric_no)) {
+        return false;
+    }
+
+    if (empty($user_id)) {
+        return false;
+    }
+
+    $matric_no = Sh_Secure($matric_no);
+    $query = mysqli_query($sqlConnect, "SELECT COUNT(`user_id`) FROM " . T_USERS . "  WHERE (`username` = '{$matric_no}' AND `username` LIKE '%{$matric_no}%') AND `user_id` != $user_id");
+    return (Sh_Sql_Result($query, 0) == 1) ? true : false;
+}

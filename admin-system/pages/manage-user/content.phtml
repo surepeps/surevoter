@@ -91,7 +91,7 @@ $allUsers = getallUserAccountData("LIMIT $limit");
                                 <i class="mdi mdi-settings text-primary"></i>
                               </a>
                               &nbsp; &nbsp;
-                              <a href="<?= Sh_Link('edit-user/'. $aus['user_id']) ?>=">
+                              <a href="<?= Sh_Link('admin-cpanel/edit-users?user_id='. $aus['user_id']) ?>">
                                 <i class="mdi mdi-grease-pencil text-primary"></i>
                               </a>
                             </td>

@@ -6,7 +6,7 @@
                 <div class="content-header">
                     <h2 class="content-title">Add New User</h2>
                     <div class="float-end">
-                        <button type="submit" id="add_page_btn7" class="btn btn-primary">Publish</button>
+                        <button type="submit" id="add_page_btn7" class="btn btn-primary disable_tbn">Publish</button>
                     </div>
                 </div>
             </div>
@@ -40,7 +40,7 @@
 
                         <div class="mb-4">
                             <label for="product_name" class="form-label">Level</label>
-                            <select name="" id="level" name="level" class="form-control">
+                            <select id="level" name="level" class="form-control">
                                 <option value="1">100LV</option>
                                 <option value="2">200LV</option>
                                 <option value="3">300LV</option>
@@ -51,7 +51,7 @@
 
                         <div class="mb-4">
                             <label for="product_name" class="form-label">Phone Number (optional)</label>
-                            <input type="text" placeholder="Type here" name="phone_number" class="form-control" id="page_keywords">
+                            <input type="text" placeholder="Enter Phone Number" name="phone_number" class="form-control" id="page_keywords">
                         </div>
 
                     </div>
@@ -109,7 +109,6 @@
 
     /*Ans code*/
     myDropzone.on("sending", function(file, xhr, formData) {
-
         formData.append("pagecode", jQuery("#pagecode").val());
         formData.append("user_id", jQuery("#user_id").val());
         formData.append("action", "upload_page_imgs");
@@ -124,7 +123,7 @@
     });
 
     myDropzone.on("error", function(data) {
-        $("#msg").html('<div class="alert alert-danger">There is some thing wrong, Please try again!</div>');
+        $("#msg").html('<div class="alert alert-danger">There is something wrong, Please try again!</div>');
     });
 
     myDropzone.on("complete", function(file) {
@@ -154,14 +153,6 @@
 
     /**
      *
-     *  Page Name converted to slugify
-     *
-     */
-    $("#page_slug").sureslugy("#page_name");
-
-
-    /**
-     *
      * Add new Page with scripts
      *
      */
@@ -170,16 +161,16 @@
 
 
         // create User
-        var form_createuser = $('form#addUserForm');
+        let form_createuser = $('form#addUserForm');
         form_createuser.ajaxForm({
-            url: Sh_Ajax_Requests_File() + '?f=account&s=add_new_users',
+            url: Sh_Ajax_Requests_File() + '?f=account&s=add_new_user',
             beforeSend: function() {
                 $('#addUserForm').parsley().validate();
                 run_waitMe($('#loader'), 1, 'win8');
                 form_createuser.find('.disable_tbn').attr('disabled', true);
             },
             success: function(data) {
-
+                // console.log(data);
                 $('#loader').waitMe('hide');
 
                 $("html, body").animate({scrollTop: 0}, 150);
@@ -194,12 +185,13 @@
 
                 } else {
 
-                    sureNotify(0, data.message);
+                    // sureNotify(0, data.message);
                     form_createuser.find('.disable_tbn').attr('disabled', false);
 
                 }
             }
         });
+
 
 
     });

@@ -13,7 +13,7 @@ $pages = array(
     'sub-category',
     'dashboard',
     'products',
-    'edit-product',
+    'edit-users',
     'orders',
     'view-order',
     'menu-settings',
@@ -64,6 +64,10 @@ if (empty($page_loaded)) {
     <script src="<?= Sh_LoadAdminLink('assets/js/jquery-3.6.0.min.js') ?>"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" defer></script>
 
+<!--    <script src="--><?//= Sh_LoadAdminLink('assets/js/bootstrap.bundle.min.js') ?><!--"></script>-->
+
+    <script src="<?= Sh_LoadAdminLink('assets/jquery.form.min.js') ?>"></script>
+
     <!-- base:css -->
     <link rel="stylesheet" href="<?= Sh_LoadAdminLink('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
     <link rel="stylesheet" href="<?= Sh_LoadAdminLink('assets/vendors/base/vendor.bundle.base.css') ?>">
@@ -75,6 +79,9 @@ if (empty($page_loaded)) {
     <!-- endinject -->
     <link rel="shortcut icon" href="<?= Sh_LoadAdminLink('assets/images/favicon.png') ?>" />
 
+    <link href="<?= Sh_LoadAdminLink('plugins/notification/snackbar/snackbar.min.css') ?>" rel="stylesheet" type="text/css" />
+    <script src="<?= Sh_LoadAdminLink('plugins/notification/snackbar/snackbar.min.js') ?>"></script>
+
     <link href="<?= Sh_LoadAdminLink('assets/css/waitMe.css') ?>" rel="stylesheet" />
     <script src="<?= Sh_LoadAdminLink('assets/js/waitMe.js') ?>"></script>
 
@@ -83,15 +90,19 @@ if (empty($page_loaded)) {
     <link href="https://parsleyjs.org/src/parsley.css" rel="stylesheet">
 
 
-    <script src="<?= Sh_LoadAdminLink('assets/jquery.form.min.js') ?>"></script>
+      <!--  DropZone Cdn  -->
+      <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+      <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
 
     <script>
       function Sh_Ajax_Requests_File(){
             return "<?php echo $sh['config']['site_url'].'/requests.php';?>"
         }
     </script>
+
+      <script src="<?= Sh_LoadAdminLink('assets/js/custom.js') ?>"></script>
   </head>
-  <body>
+  <body id="loader">
     <div class="px-5 container-scroller">
 				
 		<!-- partial:partials/_horizontal-navbar.html -->
@@ -364,7 +375,7 @@ if (empty($page_loaded)) {
     </div>
 		<!-- container-scroller -->
     <!-- base:js -->
-    <script src="<?= Sh_LoadAdminLink('assets/vendors/base/vendor.bundle.base.js') ?>"></script>
+<!--    <script src="--><?//= Sh_LoadAdminLink('assets/vendors/base/vendor.bundle.base.js') ?><!--"></script>-->
     <!-- endinject -->
     <!-- Plugin js for this page-->
     <!-- End plugin js for this page-->
@@ -381,6 +392,7 @@ if (empty($page_loaded)) {
     <script src="<?= Sh_LoadAdminLink('assets/js/jquery.cookie.js') ?>" type="text/javascript"></script>
     <!-- Custom js for this page-->
     <script src="<?= Sh_LoadAdminLink('assets/js/dashboard.js') ?>"></script>
+
     <!-- End custom js for this page-->
   </body>
 </html>
