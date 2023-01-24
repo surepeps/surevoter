@@ -87,7 +87,7 @@ $allUsers = getallUserAccountData("LIMIT $limit");
                             <td><?= $aus['level'] ?></td>
                             <td><?= ($aus['vote_status'] == 1) ? '<p class="badge badge-success">Voted</p>' : '<p class="badge badge-success">Not Yet</p>' ?></td>
                             <td>
-                              <a href="">
+                              <a href="<?= Sh_Link('admin-cpanel/make-candidate?user_id='. $aus['user_id']) ?>">
                                 <i class="mdi mdi-settings text-primary"></i>
                               </a>
                               &nbsp; &nbsp;

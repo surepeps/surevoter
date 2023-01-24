@@ -1,0 +1,119 @@
+<?php
+
+
+$allAdminsData = getallAdminAccountData();
+
+
+?>
+
+
+<div class="content-wrapper">
+    <div class="row">
+
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+                <header class="card-header">
+                    <h4 class="card-title">Manage Admins</h4>
+                    <p class="card-description"> Manage all Admins account here</p>
+                </header>
+                <div class="card-body">
+                    <div class="col-12">
+                        <div class="table-responsive">
+
+                            <div id="all-datas">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Full Name</th>
+                                        <th scope="col">Username</th>
+                                        <th scope="col">Phone Number</th>
+                                        <th scope="col">Password</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <?php
+                                    foreach($allAdminsData as $adm){
+                                        ?>
+                                        <tr>
+                                            <td class="py-1"><?= $adm['name'] ?></td>
+                                            <td><?= $adm['username'] ?></td>
+                                            <td><?= $adm['phone_number'] ?></td>
+                                            <td><b>**********</b></td>
+                                            <td><?= ($adm['status'] == 1) ? '<p class="badge badge-success">Active</p>' : '<p class="badge badge-success">In-Active</p>' ?></td>
+                                            <td>
+                                                <a onclick="deleteAdmin(<?= $adm['admin_id'] ?>)" id="delete_admin">
+                                                    <i class="mdi mdi-delete text-danger"></i>
+                                                </a>
+                                                &nbsp; &nbsp;&nbsp; &nbsp;
+                                                <a href="<?= Sh_Link('admin-cpanel/edit-admins?admin_id='. $adm['admin_id']) ?>">
+                                                    <i class="mdi mdi-grease-pencil text-primary"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+
+                                    </tbody>
+                                </table>
+                                <br>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    //delete Admin
+    function deleteAdmin(admin_id){
+
+        swal({
+            title: "Admin Account Deletion!",
+            text: "Are you sure you want to delete this admin?",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+            padding: '2em'
+        }).then(function(result) {
+
+            if (result.value) {
+
+                $.ajax({
+                    url: Sh_Ajax_Requests_File() + '?f=admin&s=delete_admin_acct&admin_id='+admin_id,
+                    beforeSend: function() {
+                        run_waitMe($('#loader'), 1, 'win8');
+                    },
+                    success: function(data){
+
+                        $('#loader').waitMe('hide');
+
+                        if(data.status == 200){
+
+                            sureNotify(1,data.message);
+
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 2000);
+
+                        }else{
+
+                            // Error
+                            sureNotify(0,data.message);
+
+                        }
+
+                    }
+                });
+
+            }
+
+        });
+
+    }
+
+</script>

@@ -1,62 +1,146 @@
+<?php
+    // position data
+    $allPosts = getPosts(10000);
+
+?>
+
+<script src="<?= Sh_LoadAdminLink('plugins/sweetalerts/sweetalert2.min.js') ?>"></script>
+<link href="<?= Sh_LoadAdminLink('plugins/sweetalerts/sweetalert2.min.css') ?>" rel="stylesheet" type="text/css" />
+<link href="<?= Sh_LoadAdminLink('plugins/sweetalerts/sweetalert.css') ?>" rel="stylesheet" type="text/css" />
+
 <!-- List of Contestants -->
 <div class="contest section mg-t">
+
+    <?php foreach ($allPosts as $ps){ ?>
     <div class="c-rows">
         <div class="cards">
-            <div class="card-title">President <label for="">Faculty of Science</label></div>
+            <div class="card-title"><?= $ps['title'] ?> <label for="">Faculty of Science</label></div>
             
             <div class="all-cards">
                 <div class="candidates">
-                    <!-- Single card -->
-                    <div class="candidate-card">
-                        <div class="img">
-                            <img src="../images/contenst-1.png" alt="">
-                        </div>
-                        <div class="desc">
-                            <div class="vote-btn">
-                                <button class="btn">Vote</button>
-                            </div>
-                            <div class="v-desc">
-                                <h3 class="name">Hassan Tijani.A</h3>
-                                <p class="dep">400lv, ZLY</p>
-                            </div> 
-                        </div>
-                    </div>
 
+                    <?php
+                        $getCands = getCandidates("all", $ps['post_id']);
+                        if (count($getCands) > 0){
+                            foreach ($getCands as $cd) {
+                                $candData = Sh_UserData($cd['user_id']);
+                    ?>
                     <!-- Single card -->
                     <div class="candidate-card">
                         <div class="img">
-                            <img src="../images/contenst-1.png" alt="">
+                            <img src="<?= $candData['avatar'] ?>" alt="">
                         </div>
                         <div class="desc">
                             <div class="vote-btn">
-                                <button class="btn">Vote</button>
-                            </div>
-                            <div class="v-desc">
-                                <h3 class="name">Hassan Tijani.A</h3>
-                                <p class="dep">400lv, ZLY</p>
-                            </div> 
-                        </div>
-                    </div>
+                                <?php
+                                    $voteStatus = getVoterStatusByPV(['voter_id' => $sh['user']['user_id'], 'post_id' =>  $ps['post_id']]);
+                                    if ($voteStatus){
+                                        if (getVoterStatusByPost(['voter_id' => $sh['user']['user_id'], 'post_id' =>  $ps['post_id'], 'candi_id' => $cd['user_id']])){
+                                ?>
+                                            <button class="btn-success disabled">Voted For</button>
+                                <?php } }else{ ?>
 
-                    <!-- Single card -->
-                    <div class="candidate-card">
-                        <div class="img">
-                            <img src="../images/contenst-1.png" alt="">
-                        </div>
-                        <div class="desc">
-                            <div class="vote-btn">
-                                <button class="btn">Vote</button>
+                                <button onclick="voteCotestant(<?= $ps['post_id'] ?>, <?= $cd['user_id'] ?>)" class="btn">Vote</button>
+
+                                <?php } ?>
                             </div>
                             <div class="v-desc">
-                                <h3 class="name">Hassan Tijani.A</h3>
-                                <p class="dep">400lv, ZLY</p>
+                                <h3 class="name"><?= $candData['name'] ?></h3>
+                                <p class="dep"><?= $candData['level'] ?>, CMP</p>
                             </div> 
                         </div>
                     </div>
+                    <?php } }else{ ?>
+                    <div class="flex justify-content-center align-items-center">
+                        <h4 class="text-center text-danger">No Candidate Found for <?= $ps['title'] ?> Position</h4>
+                    </div>
+                    <?php } ?>
+
                 </div>    
             </div>
             
         </div>
 
     </div>
+    <?php } ?>
+
 </div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.css" integrity="sha512-DIW4FkYTOxjCqRt7oS9BFO+nVOwDL4bzukDyDtMO7crjUZhwpyrWBFroq+IqRe6VnJkTpRAS6nhDvf0w+wHmxg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js" integrity="sha512-Zq9o+E00xhhR/7vJ49mxFNJ0KQw1E1TMWkPTxrWcnpfEFDEXgUiwJHIKit93EW/XxE31HSI5GEOW06G6BF1AtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<script>
+
+    let message = (type, msg) => {
+        if (type == 'error'){
+            iziToast.error({
+                title: 'Error',
+                position: 'topRight',
+                message: msg
+            });
+        }else{
+            iziToast.error({
+                title: 'Success',
+                position: 'topRight',
+                message: msg
+            });
+        }
+    }
+
+
+    function voteCotestant(post_id, cand_id){
+        if (post_id == '' || post_id == 0){
+            message('error', "Invalid Position Id");
+        }
+
+        if (cand_id == '' || cand_id == 0){
+            message('error', "Invalid Candidate Id");
+        }
+
+        swal({
+            title: "You are about to Vote!",
+            text: "Are you sure you want to vote for this candidate?",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Vote',
+            padding: '2em'
+        }).then(function(result) {
+
+            if (result.value) {
+
+                $.ajax({
+                    url: Sh_Ajax_Requests_File() + '?f=account&s=vote_candi&cand_id=' + cand_id+'&post_id='+ post_id,
+                    beforeSend: function () {
+                        run_waitMe($('#loader'), 1, 'win8');
+                    },
+                    success: function (data) {
+
+                        $('#loader').waitMe('hide');
+
+                        if (data.status == 200) {
+
+                            sureNotify(1, data.message);
+
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 2000);
+
+                        } else {
+
+                            // Error
+                            sureNotify(0, data.message);
+
+                        }
+
+                    }
+                });
+            }
+        });
+
+
+
+    }
+
+
+</script>

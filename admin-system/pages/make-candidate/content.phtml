@@ -1,0 +1,287 @@
+<?php
+
+if (isset($_GET['user_id']) && $_GET['user_id'] > 0){
+    // check if user is existing
+    $user_id = Sh_Secure($_GET['user_id']);
+    $userExist = Sh_UserExistsByID($user_id);
+
+    if (!$userExist){
+        header("Location:" . $sh['config']['site_url'].'/admincpanel/manage-user');
+        exit();
+    }
+
+}else{
+    header("Location:" . $sh['config']['site_url'].'/admincpanel/manage-user');
+    exit();
+}
+
+$UserData = Sh_UserData($user_id);
+
+// check candidate availability
+$userAvailability = checkUserConditions($user_id);
+?>
+
+
+<div class="content-wrapper">
+    <div class="row">
+
+        <form class="row" data-parsley-validate="data-parsley-validate" data-parsley-excluded="input[type=button], input[type=submit], input[type=reset], input[type=hidden], :disabled, :hidden" id="makecandidate" method="post">
+            <div class="col-12">
+                <div class="content-header">
+                    <h2 class="content-title">Make User As Candidate</h2>
+                </div>
+            </div>
+
+
+            <div class="col-lg-7">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="float-start">User Details</h4>
+                    </div>
+                    <div class="card-body row">
+
+                        <?php if($userAvailability[0] === 1){ ?>
+                            <div class="col-md-12">
+                                <div class="alert alert-danger"><?= $userAvailability[1] ?></div>
+                            </div>
+                        <?php } ?>
+
+
+                        <div class="mb-4 col-6">
+                            <label for="product_name" class="form-label">First Name: <b><?= $UserData['first_name'] ?></b></label>
+                        </div>
+
+                        <div class="mb-4 col-6">
+                            <label for="product_name" class="form-label">Last Name: <b><?= $UserData['last_name'] ?></b></label>
+                        </div>
+
+                        <div class="mb-4 col-6">
+                            <label for="product_name" class="form-label">Middle Name: <b><?= ($UserData['middle_name'] != '') ? $UserData['middle_name'] : 'NILL' ?></b></label>
+                        </div>
+
+                        <div class="mb-4 col-6">
+                            <label for="product_name" class="form-label">Matric Number: <b><?= $UserData['username'] ?></b></label>
+                        </div>
+
+                        <div class="mb-4 col-6">
+                            <label for="level" class="form-label">Level: <b><?= $UserData['level'] ?></b></label>
+                        </div>
+
+                        <div class="mb-4 col-6">
+                            <label for="phone_number" class="form-label">Phone Number <b><?= ($UserData['phone_number'] != '') ? $UserData['phone_number'] : 'NILL' ?></b></label>
+                            <input type="hidden" name="user_id" id="user_id" value="<?= $UserData['user_id'] ?>">
+                        </div>
+
+
+                        <?php if($userAvailability[0] === 1){
+                            $user_cand_id = getCandidateData($user_id);
+                        ?>
+                            <div class="mb-4 col-12">
+                                <label for="level" class="form-label">Select Position</label>
+                                <select id="post_id" name="post_id" class="form-control">
+                                    <?php foreach (getPosts('all') as $ps){ ?>
+                                        <option <?= ($ps['post_id'] == $user_cand_id['post_id']) ? "selected" : "" ?> value="<?= $ps['post_id'] ?>"><?= $ps['title'] ?></option>
+                                    <?php } ?>
+                                </select>
+
+                            </div>
+
+                            <div class="mb-4 col-12">
+                                <label for="level" class="form-label">Candidate Status</label>
+                                <select id="status" name="status" class="form-control">
+                                    <option <?= ($user_cand_id['status'] == '1') ? "selected" : "" ?> value="1">Active</option>
+                                    <option <?= ($user_cand_id['status'] == '0') ? "selected" : "" ?> value="0">Disable</option>
+                                </select>
+                                <input type="hidden" name="user_id" id="user_id" value="<?= $UserData['user_id'] ?>">
+                            </div>
+                            <input type="hidden" value="<?= $user_cand_id['candidate_id'] ?>" name="cand_id" id="cand_id">
+
+                            <div class="float-end">
+                                <button type="submit" id="add_page_btn7" class="btn btn-success disable_tbn">Update Candidate</button>
+                                <a href="javascript:void(0);" onclick="deleteCandidateUser(<?= $user_cand_id['candidate_id'] ?>)" id="add_page_btn7" class="btn btn-danger disable_tbn"> <i class="mdi mdi-delete"></i> Remove Candidate</a>
+                                <a href="javascript:void(0);" onclick="resetUserVote(<?= $user_cand_id['candidate_id'] ?>)" id="add_page_btn7" class="btn btn-danger disable_tbn text-white"> <i class="mdi mdi-delete"></i> Reset User Vote</a>
+                            </div>
+                        <?php }else{ ?>
+                            <div class="mb-4 col-12">
+                                <label for="level" class="form-label">Select Position</label>
+                                <select id="post_id" name="post_id" class="form-control">
+                                    <?php foreach (getPosts('all') as $ps){ ?>
+                                        <option value="<?= $ps['post_id'] ?>"><?= $ps['title'] ?></option>
+                                    <?php } ?>
+                                </select>
+
+                            </div>
+
+                            <div class="float-end">
+                                <button type="submit" id="add_page_btn7" class="btn btn-success disable_tbn">Make Candidate</button>
+                                <a href="javascript:void(0);" onclick="resetUserVote(<?= $user_id ?>)" id="add_page_btn7" class="btn btn-danger disable_tbn text-white"> <i class="mdi mdi-delete"></i> Reset User Vote</a>
+                            </div>
+                        <?php } ?>
+                    </div>
+                </div> <!-- card end// -->
+            </div>
+            <div class="col-lg-5">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="float-start">User Profile Image</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="bg-image hover-overlay ripple shadow-1-strong rounded">
+                            <img class="w-100" src="<?= $UserData['avatar'] ?>" alt="">
+                        </div>
+                        <br>
+                    </div>
+                </div> <!-- card end// -->
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+
+
+<script>
+
+    /**
+     *
+     * Update User data with scripts
+     *
+     */
+
+    function resetUserVote(us_id){
+        swal({
+            title: "User's Votes About to Reset!",
+            text: "Are you sure you want to reset user votes?",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Reset Votes',
+            padding: '2em'
+        }).then(function(result) {
+
+            if (result.value) {
+
+                $.ajax({
+                    url: Sh_Ajax_Requests_File() + '?f=admin_setting&s=reset_all_votes&user_id='+us_id,
+                    beforeSend: function() {
+                        run_waitMe($('#loader'), 1, 'win8');
+                    },
+                    success: function(data){
+
+                        $('#loader').waitMe('hide');
+
+                        if(data.status == 200){
+
+                            sureNotify(1,data.message);
+
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 2000);
+
+                        }else{
+
+                            // Error
+                            sureNotify(0,data.message);
+
+                        }
+
+                    }
+                });
+
+            }
+
+        });
+
+    }
+
+
+    function deleteCandidateUser(cand_id){
+
+        swal({
+            title: "Candidate Account Deletion!",
+            text: "Are you sure you want to delete candidate?",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+            padding: '2em'
+        }).then(function(result) {
+
+            if (result.value) {
+
+                $.ajax({
+                    url: Sh_Ajax_Requests_File() + '?f=account&s=delete_candidate&cand_id='+cand_id,
+                    beforeSend: function() {
+                        run_waitMe($('#loader'), 1, 'win8');
+                    },
+                    success: function(data){
+
+                        $('#loader').waitMe('hide');
+
+                        if(data.status == 200){
+
+                            sureNotify(1,data.message);
+
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 2000);
+
+                        }else{
+
+                            // Error
+                            sureNotify(0,data.message);
+
+                        }
+
+                    }
+                });
+
+            }
+
+        });
+
+
+    }
+
+    $(function() {
+
+
+        // create User
+        let form_usercandidate = $('form#makecandidate');
+        form_usercandidate.ajaxForm({
+            url: Sh_Ajax_Requests_File() + '?f=account&s=make-user-candidate',
+            beforeSend: function() {
+                $('#makecandidate').parsley().validate();
+                run_waitMe($('#loader'), 1, 'win8');
+                form_usercandidate.find('.disable_tbn').attr('disabled', true);
+            },
+            success: function(data) {
+                $('#loader').waitMe('hide');
+
+                $("html, body").animate({scrollTop: 0}, 150);
+
+                if (data.status == 200) {
+
+                    sureNotify(1, data.message);
+
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 2000);
+
+                } else {
+                    sureNotify(0, data.message);
+                    form_usercandidate.find('.disable_tbn').attr('disabled', false);
+
+                }
+            }
+        });
+
+
+
+
+
+
+
+    });
+
+</script>
+

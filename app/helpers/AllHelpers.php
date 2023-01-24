@@ -1,10 +1,5 @@
 <?php
-/**
- * essential-master
- * Created by SureCoder
- * FILE NAME: AllHelpers.php
- * YEAR: 2022
- */
+
 
 
 /*

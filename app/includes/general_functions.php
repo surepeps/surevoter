@@ -301,20 +301,24 @@ function Sh_IsLogged() {
 }
 
 
-
 /**
  * @return bool|void
  */
-function Sh_IsCarted() {
-    if (isset($_SESSION['cart_id']) && !empty($_SESSION['cart_id'])) {
-        return true;
-    } else if (!empty($_COOKIE['cart_id']) && !empty($_COOKIE['cart_id'])) {
-        return true;
+function Sh_IsAdminLogged() {
+    if (isset($_SESSION['admin_id']) && !empty($_SESSION['admin_id'])) {
+        $id = Sh_GetUserFromSessionID($_SESSION['admin_id']);
+        if (is_numeric($id) && !empty($id)) {
+            return true;
+        }
+    } else if (!empty($_COOKIE['admin_id']) && !empty($_COOKIE['admin_id'])) {
+        $id = Sh_GetUserFromSessionID($_COOKIE['admin_id']);
+        if (is_numeric($id) && !empty($id)) {
+            return true;
+        }
     } else {
         return false;
     }
 }
-
 
 
 
@@ -612,29 +616,29 @@ function Sh_ShareFile($data = array(), $type = 0, $crop = true) {
 
     $allowed = '';
 
-    if (!file_exists('upload/files/' . date('Y'))) {
-        @mkdir('upload/files/' . date('Y'), 0777, true);
+    if (!file_exists('uploads/files/' . date('Y'))) {
+        @mkdir('uploads/files/' . date('Y'), 0777, true);
     }
-    if (!file_exists('upload/files/' . date('Y') . '/' . date('m'))) {
-        @mkdir('upload/files/' . date('Y') . '/' . date('m'), 0777, true);
+    if (!file_exists('uploads/files/' . date('Y') . '/' . date('m'))) {
+        @mkdir('uploads/files/' . date('Y') . '/' . date('m'), 0777, true);
     }
-    if (!file_exists('upload/photos/' . date('Y'))) {
-        @mkdir('upload/photos/' . date('Y'), 0777, true);
+    if (!file_exists('uploads/photos/' . date('Y'))) {
+        @mkdir('uploads/photos/' . date('Y'), 0777, true);
     }
-    if (!file_exists('upload/photos/' . date('Y') . '/' . date('m'))) {
-        @mkdir('upload/photos/' . date('Y') . '/' . date('m'), 0777, true);
+    if (!file_exists('uploads/photos/' . date('Y') . '/' . date('m'))) {
+        @mkdir('uploads/photos/' . date('Y') . '/' . date('m'), 0777, true);
     }
-    if (!file_exists('upload/videos/' . date('Y'))) {
-        @mkdir('upload/videos/' . date('Y'), 0777, true);
+    if (!file_exists('uploads/videos/' . date('Y'))) {
+        @mkdir('uploads/videos/' . date('Y'), 0777, true);
     }
-    if (!file_exists('upload/videos/' . date('Y') . '/' . date('m'))) {
-        @mkdir('upload/videos/' . date('Y') . '/' . date('m'), 0777, true);
+    if (!file_exists('uploads/videos/' . date('Y') . '/' . date('m'))) {
+        @mkdir('uploads/videos/' . date('Y') . '/' . date('m'), 0777, true);
     }
-    if (!file_exists('upload/sounds/' . date('Y'))) {
-        @mkdir('upload/sounds/' . date('Y'), 0777, true);
+    if (!file_exists('uploads/sounds/' . date('Y'))) {
+        @mkdir('uploads/sounds/' . date('Y'), 0777, true);
     }
-    if (!file_exists('upload/sounds/' . date('Y') . '/' . date('m'))) {
-        @mkdir('upload/sounds/' . date('Y') . '/' . date('m'), 0777, true);
+    if (!file_exists('uploads/sounds/' . date('Y') . '/' . date('m'))) {
+        @mkdir('uploads/sounds/' . date('Y') . '/' . date('m'), 0777, true);
     }
     if (isset($data['file']) && !empty($data['file'])) {
         $data['file'] = $data['file'];
@@ -690,7 +694,7 @@ function Sh_ShareFile($data = array(), $type = 0, $crop = true) {
     if (!in_array($data['type'], $mime_types)) {
         return false;
     }
-    $dir         = "upload/{$folder}/" . date('Y') . '/' . date('m');
+    $dir         = "uploads/{$folder}/" . date('Y') . '/' . date('m');
     $filename    = $dir . '/' . Sh_GenerateKey() . '_' . date('d') . '_' . md5(time()) . "_{$fileType}.{$file_extension}";
     $second_file = pathinfo($filename, PATHINFO_EXTENSION);
     if (move_uploaded_file($data['file'], $filename)) {
@@ -730,7 +734,6 @@ function Sh_ShareFile($data = array(), $type = 0, $crop = true) {
         return $last_data;
     }
 }
-
 
 
 /**

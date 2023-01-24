@@ -1,0 +1,66 @@
+<div class="content-wrapper d-flex align-items-center auth px-0">
+    <div class="row w-100 mx-0">
+        <div class="col-lg-4 mx-auto">
+            <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+                <div class="brand-logo">
+                    <img src="" alt="logo">
+                </div>
+                <h4>Hello! let's get started</h4>
+                <h6 class="font-weight-light">Sign in to continue.</h6>
+                <form id="login_user" data-parsley-validate="data-parsley-validate" data-parsley-excluded="input[type=button], input[type=submit], input[type=reset], input[type=hidden], :disabled, :hidden" method="POST">
+                    <div class="errors"></div>
+                    <div class="form-group">
+                        <input required name="username" type="text" class="form-control form-control-lg" id="username" placeholder="Username">
+                    </div>
+                    <div class="form-group">
+                        <input required name="password" type="password" class="form-control form-control-lg" id="password" placeholder="Password">
+                    </div>
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">SIGN IN</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // LOGIN
+    var working = false;
+    var $this = $('#login_user');
+    var $state = $this.find('.errors');
+    var $login_anim = $('#hs');
+
+    $(function() {
+
+        $this.parsley();
+
+        $this.ajaxForm({
+            url: Sh_Ajax_Requests_File() + '?f=admin&s=auth_admin',
+            beforeSend: function () {
+                working = true;
+                $this.parsley().validate();
+                $this.find('.disable_btn').attr("disabled", true);
+                run_waitMe($('#loader'), 1, 'win8');
+            },
+            success: function (data) {
+                console.log(data)
+                if (data.status == 200 || data.status == 600) {
+                    $state.removeClass('alert alert-danger').addClass('alert alert-success').html(data.message);
+                    $login_anim.hide(500);
+                    setTimeout(function () {
+                        window.location.href = data.location;
+                    }, 1000);
+                } else {
+                    var errors = data.errors.join("<br>");
+                    $state.addClass('alert alert-danger').html(errors);
+                    $('#loader').waitMe('hide');
+                }
+                working = false;
+                $this.find('.disable_btn').attr("disabled", false);
+            }
+        });
+
+    });
+</script>

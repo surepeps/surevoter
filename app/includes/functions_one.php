@@ -153,6 +153,22 @@ function Sh_UserExists($username) {
 
 /**
  * @param $user_id
+ * @return array|false|null
+ */
+function getCandidateData($user_id){
+    global $sqlConnect;
+    if (empty($user_id)){
+        return false;
+    }
+
+    $user_id = Sh_Secure($user_id);
+    $query = mysqli_query($sqlConnect, "SELECT * FROM ". T_CANDI_T. " WHERE `user_id` = $user_id");
+    return mysqli_fetch_assoc($query);
+}
+
+
+/**
+ * @param $user_id
  * @param $session_id
  * @param $platform
  * @return bool
@@ -371,6 +387,22 @@ function Sh_UserIdForLogin($username) {
 }
 
 /**
+ * @param $username
+ * @return false|mixed
+ */
+function Sh_AdminIdForLogin($username) {
+    global $sqlConnect;
+    if (empty($username)) {
+        return false;
+    }
+    $username =   Sh_Secure($username);
+    $query    = mysqli_query($sqlConnect, "SELECT `admin_id` FROM " . T_ADMINS . " WHERE `username` = '{$username}' ");
+    return Sh_Sql_Result($query, 0, 'admin_id');
+}
+
+
+
+/**
  * @return mixed|string
  */
 function Sh_CreateSession() {
@@ -460,14 +492,15 @@ function Sh_ActivateUser($email, $code) {
  * @param $user_id
  * @return bool
  */
-function Sh_IsAdmin($user_id = 0) {
+function Sh_IsAdmin($admin_id = 0) {
     global $sh, $sqlConnect;
-    if ($sh['loggedin'] == false) {
+    if ($sh['admin_loggedin'] == false) {
         return false;
     }
-    $user_id = Sh_Secure($user_id);
-    if (!empty($user_id) && $user_id > 0) {
-        $query = mysqli_query($sqlConnect, "SELECT COUNT(`user_id`) as count FROM " . T_USERS . " WHERE admin = '1' AND user_id = {$user_id}");
+    $admin_id = Sh_Secure($admin_id);
+    
+    if (!empty($admin_id) && $admin_id > 0) {
+        $query = mysqli_query($sqlConnect, "SELECT COUNT(`admin_id`) as count FROM " . T_ADMINS . " WHERE `status` = 1 AND admin_id = {$admin_id}");
         $sql   = mysqli_fetch_assoc($query);
         if ($sql['count'] > 0) {
             return true;
@@ -475,11 +508,13 @@ function Sh_IsAdmin($user_id = 0) {
             return false;
         }
     }
-    if ($sh['user']['admin'] == 1) {
+    
+    if ($sh['admin']['status'] == 1) {
         return true;
     }
     return false;
 }
+
 
 
 /**
@@ -660,6 +695,25 @@ function Sh_UserExistsByID($id = 0, $cond = '') {
 }
 
 
+/**
+ * @param $id
+ * @return bool
+ */
+function Sh_AdminExistsByID($id = 0, $cond = '') {
+    global $sqlConnect;
+    if (empty($id)) {
+        return false;
+    }
+    $id    = Sh_Secure($id);
+    if ($cond != ""){
+        $query = mysqli_query($sqlConnect, "SELECT COUNT(`admin_id`) FROM " . T_ADMINS . " WHERE `admin_id`= $id AND $cond ");
+    }else{
+        $query = mysqli_query($sqlConnect, "SELECT COUNT(`admin_id`) FROM " . T_ADMINS . " WHERE `admin_id`= $id ");
+    }
+    return (Sh_Sql_Result($query, 0) == 1) ? true : false;
+}
+
+
 
 /**
  * @param $matric_no
@@ -667,7 +721,7 @@ function Sh_UserExistsByID($id = 0, $cond = '') {
  */
 function getUserExistence($matric_no){
     global $sqlConnect;
-    if (empty($title)) {
+    if (empty($matric_no)) {
         return false;
     }
     $matric_no = Sh_Secure($matric_no);
@@ -676,9 +730,24 @@ function getUserExistence($matric_no){
 }
 
 
+
+/**
+ * @param $username
+ * @return bool
+ */
+function getAdminExistence($username){
+    global $sqlConnect;
+    if (empty($username)) {
+        return false;
+    }
+    $username = Sh_Secure($username);
+    $query    = mysqli_query($sqlConnect, "SELECT COUNT(`admin_id`) FROM " . T_ADMINS . "  WHERE (`username` = '{$username}' AND `username` LIKE '%{$username}%') ");
+    return (Sh_Sql_Result($query, 0) == 1) ? true : false;
+}
+
+
 /**
  * @param $matric_no
- * @param $cat_code
  * @param $user_id
  * @return bool
  */
@@ -695,5 +764,160 @@ function getUserExistenceForUpdate($matric_no, $user_id){
 
     $matric_no = Sh_Secure($matric_no);
     $query = mysqli_query($sqlConnect, "SELECT COUNT(`user_id`) FROM " . T_USERS . "  WHERE (`username` = '{$matric_no}' AND `username` LIKE '%{$matric_no}%') AND `user_id` != $user_id");
+    return (Sh_Sql_Result($query, 0) == 1) ? true : false;
+}
+
+
+
+/**
+ * @param $username
+ * @param $admin_id
+ * @return bool
+ */
+function getAdminExistenceForUpdate($username, $admin_id){
+    global $sqlConnect;
+
+    if (empty($username)) {
+        return false;
+    }
+
+    if (empty($admin_id)) {
+        return false;
+    }
+
+    $username = Sh_Secure($username);
+    $query = mysqli_query($sqlConnect, "SELECT COUNT(`admin_id`) FROM " . T_ADMINS . "  WHERE (`username` = '{$username}' AND `username` LIKE '%{$username}%') AND `admin_id` != $admin_id");
+    return (Sh_Sql_Result($query, 0) == 1) ? true : false;
+}
+
+
+/**
+ * @param $user_id
+ * @return array|false|null
+ */
+function checkCandidateAvailabilityData($user_id){
+    global $sqlConnect;
+
+    if (empty($user_id)) {
+        return false;
+    }
+
+    $query = mysqli_query($sqlConnect, "SELECT * FROM " . T_CANDI_T . "  WHERE `user_id` = $user_id");
+    $pquery = mysqli_fetch_assoc($query);
+
+    return ($pquery != []) ? $pquery : false;
+}
+
+
+function getPositionData($post_id){
+    global $sqlConnect;
+
+    if (empty($post_id)) {
+        return false;
+    }
+
+    $query = mysqli_query($sqlConnect, "SELECT * FROM " . T_POSTS_T . "  WHERE `post_id` = $post_id");
+    $pquery = mysqli_fetch_assoc($query);
+
+    return ($pquery != []) ? $pquery : false;
+}
+
+
+
+function getAdminData($admin_id){
+    global $sqlConnect;
+
+    if (empty($admin_id)) {
+        return false;
+    }
+
+    $query = mysqli_query($sqlConnect, "SELECT * FROM " . T_ADMINS . "  WHERE `admin_id` = $admin_id");
+    $pquery = mysqli_fetch_assoc($query);
+
+    return ($pquery != []) ? $pquery : false;
+}
+
+
+/**
+ * @param $user_id
+ * @return false|void
+ */
+function checkUserConditions($user_id){
+    if (empty($user_id)) {
+        return false;
+    }
+
+    $userData = Sh_UserData($user_id);
+
+    if (!$userData){
+        return false;
+    }
+
+    $errorMsg = "";
+    $type = 0;
+    $checkUserAvailData =  checkCandidateAvailabilityData($user_id);
+    if ($userData['active'] != 1){
+        $type = 1;
+        $errorMsg = "Sorry this user's account is not fully activated";
+    }else if($checkUserAvailData){
+        $type = 1;
+        $errorMsg = '<b>Note:</b> This user is already a candidate contesting for <b>'.getPositionData($checkUserAvailData['post_id'])['title']. ' Position </b>';
+    }
+
+    return array($type, $errorMsg);
+}
+
+
+
+/**
+ * @param $hash
+ * @return bool
+ */
+function Sh_CheckSession($hash = '') {
+    if (!isset($_SESSION['hash_id']) || empty($_SESSION['hash_id'])) {
+        return false;
+    }
+    if (empty($hash)) {
+        return false;
+    }
+    if ($hash == $_SESSION['hash_id']) {
+        return true;
+    }
+    return false;
+}
+
+
+/**
+ * @param $voteData
+ * @return bool
+ */
+function getVoterStatusByPV($voteData){
+    global $sqlConnect;
+    if (empty($voteData)) {
+        return false;
+    }
+
+    $voter_id = $voteData['voter_id'];
+    $post_id  = $voteData['post_id'];
+
+    $query    = mysqli_query($sqlConnect, "SELECT COUNT(`vote_id`) FROM " . T_VOTES_T . "  WHERE `post_id` = $post_id AND `voter_id` = $voter_id ");
+    return (Sh_Sql_Result($query, 0) == 1) ? true : false;
+}
+
+/**
+ * @param $voteData
+ * @return bool
+ */
+function getVoterStatusByPost($voteData){
+    global $sqlConnect;
+    if (empty($voteData)) {
+        return false;
+    }
+
+    $voter_id = $voteData['voter_id'];
+    $post_id  = $voteData['post_id'];
+    $candi_id = $voteData['candi_id'];
+
+    $query    = mysqli_query($sqlConnect, "SELECT COUNT(`vote_id`) FROM " . T_VOTES_T . "  WHERE `candidate_id` = $candi_id AND `post_id` = $post_id AND `voter_id` = $voter_id ");
     return (Sh_Sql_Result($query, 0) == 1) ? true : false;
 }

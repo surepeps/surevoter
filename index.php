@@ -62,9 +62,6 @@ if ($sh['loggedin'] == true) {
         case 'welcome':
             include('routes/welcome.php');
             break;
-        case 'register':
-            include('routes/register.php');
-            break;
         case 'login':
             include('routes/login.php');
             break;
@@ -73,7 +70,7 @@ if ($sh['loggedin'] == true) {
             break;  
         case 'vote':
             include('routes/vote.php');
-            break;  
+            break;
     }
 
 }

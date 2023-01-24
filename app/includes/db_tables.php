@@ -7,6 +7,7 @@ define('T_NOTIFY_MESSAGES', 'bs_notify_messages');
 define('T_LANGS', 'bs_langs');
 define('T_APP_SESSIONS', 'bs_appssessions');
 define('T_USERS','bs_users');
+define('T_ADMINS','bs_admins');
 define('T_BAD_LOGIN', 'bs_bad_login');
 define('T_EMAILS', 'bs_emails');
 define('T_POSTS_T', 'bs_posts');

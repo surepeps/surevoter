@@ -1,0 +1,191 @@
+<?php
+
+if (isset($_GET['admin_id']) && $_GET['admin_id'] > 0){
+    // check if user is existing
+    $admin_id = Sh_Secure($_GET['admin_id']);
+    $userExist = Sh_AdminExistsByID($admin_id);
+
+    if (!$userExist){
+        header("Location:" . $sh['config']['site_url'].'/admincpanel/manage-admin');
+        exit();
+    }
+
+}else{
+    header("Location:" . $sh['config']['site_url'].'/admincpanel/manage-admin');
+    exit();
+}
+
+$adminData = getSingleAdminData($admin_id);
+
+?>
+
+
+<div class="content-wrapper">
+    <div class="row">
+
+
+            <div class="col-12">
+                <div class="content-header">
+                    <h2 class="content-title">Edit Admin Account</h2>
+
+                </div>
+            </div>
+
+
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="float-start">Admin Details</h4>
+                    </div>
+                    <div class="card-body">
+                        <form class="row" data-parsley-validate="data-parsley-validate" data-parsley-excluded="input[type=button], input[type=submit], input[type=reset], input[type=hidden], :disabled, :hidden" id="updateUserForm" method="post">
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Full Name</label>
+                                <input type="text" placeholder="Full Name" required="required" value="<?= $adminData['name'] ?>" name="full_name" class="form-control" id="first_name">
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Username</label>
+                                <input type="text" placeholder="Username" required="required" name="username" value="<?= $adminData['username'] ?>" class="form-control" id="username">
+                            </div>
+
+
+                            <div class="mb-4">
+                                <label for="phone_number" class="form-label">Phone Number (optional)</label>
+                                <input type="text" value="<?= $adminData['phone_number'] ?>" placeholder="Type Phone Number" name="phone_number" class="form-control" id="phone_number">
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="active" class="form-label">Account Active</label>
+                                <input type="hidden" name="admin_id" id="admin_id" value="<?= $adminData['admin_id'] ?>">
+                                <select id="active" name="active" class="form-control">
+                                    <option <?= ( $adminData['status'] == '1' ) ? 'selected' : '' ?> value="1">Enable</option>
+                                    <option <?= ( $adminData['status'] == '0' ) ? 'selected' : '' ?> value="0">Disable</option>
+                                </select>
+                            </div>
+
+                            <div class="float-end">
+                                <button type="submit" id="add_page_btn7" class="btn btn-primary disable_tbn">Update Profile</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div> <!-- card end// -->
+            </div>
+            
+            
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="float-start">Update Admin Password</h4>
+                    </div>
+                    <div class="card-body">
+                        <form class="row" data-parsley-validate="data-parsley-validate" data-parsley-excluded="input[type=button], input[type=submit], input[type=reset], input[type=hidden], :disabled, :hidden" id="updateUserPassForm" method="post">
+                            <div class="mb-4">
+                                <label for="password" class="form-label">Change Admin Password</label>
+                                <input type="text" placeholder="Password" required="required" value="" name="full_name" class="form-control" id="password">
+                            </div>
+                            
+                            <input type="hidden" name="admin_id" id="admin_id" value="<?= $adminData['admin_id'] ?>">
+                            
+
+                            <div class="float-end">
+                                <button type="submit" id="add_page_btn7" class="btn btn-primary disable_tbn">Update Password</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div> <!-- card end// -->
+            </div>
+
+
+
+
+    </div>
+</div>
+
+
+
+<script>
+    let base_url = "<?= $sh['site_url']  ?>";
+    let api_path = "/api/xhr_api";
+
+
+    /**
+     *
+     * Update User data with scripts
+     *
+     */
+
+    $(function() {
+
+
+        // create User
+        let form_updateuser = $('form#updateUserForm');
+        form_updateuser.ajaxForm({
+            url: Sh_Ajax_Requests_File() + '?f=admin&s=update-admin',
+            beforeSend: function() {
+                $('#updateUserForm').parsley().validate();
+                run_waitMe($('#loader'), 1, 'win8');
+                form_updateuser.find('.disable_tbn').attr('disabled', true);
+            },
+            success: function(data) {
+                $('#loader').waitMe('hide');
+
+                $("html, body").animate({scrollTop: 0}, 150);
+
+                if (data.status == 200) {
+
+                    sureNotify(1, data.message);
+
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 2000);
+
+                } else {
+
+                    sureNotify(0, data.message);
+                    form_updateuser.find('.disable_tbn').attr('disabled', false);
+
+                }
+            }
+        });
+        
+        
+        
+        let form_updateuserPass = $('form#updateUserPassForm');
+        form_updateuserPass.ajaxForm({
+            url: Sh_Ajax_Requests_File() + '?f=admin&s=update-admin-pass',
+            beforeSend: function() {
+                $('#updateUserPassForm').parsley().validate();
+                run_waitMe($('#loader'), 1, 'win8');
+                form_updateuserPass.find('.disable_tbn').attr('disabled', true);
+            },
+            success: function(data) {
+                $('#loader').waitMe('hide');
+
+                $("html, body").animate({scrollTop: 0}, 150);
+
+                if (data.status == 200) {
+
+                    sureNotify(1, data.message);
+
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 2000);
+
+                } else {
+
+                    sureNotify(0, data.message);
+                    form_updateuserPass.find('.disable_tbn').attr('disabled', false);
+
+                }
+            }
+        });
+
+
+
+    });
+
+</script>
+

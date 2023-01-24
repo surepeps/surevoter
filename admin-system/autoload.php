@@ -4,41 +4,58 @@ $page = 'dashboard';
 
 // Pages settings
 $pages = array(
-    'general-settings',
-    'transactions',
-    'site-setting',
     'manage-user',
-    'add-product',
-    'category',
-    'sub-category',
-    'dashboard',
-    'products',
-    'edit-users',
-    'orders',
-    'view-order',
-    'menu-settings',
-    'rating-system',
-    'subscribers',
+    'manage-admin',
+    'make-candidate',
     'create-user',
+    'create-position',
+    'vote-record',
+    'dashboard',
+    'settings',
+    'edit-users',
+    'edit-admins',
+    'make-admins',
     'page-list',
-    'edit-page',
-    'logistics',
-    'other-settings',
-    'home-settings',
-    'ads-management'
+    'edit-position',
+    'auth',
 );
+
+
 
 if (!empty($_GET['page'])) {
     $page = Sh_Secure($_GET['page'], 0);
 }
 
-if (in_array($page, $pages)) {
-    $page_loaded = Sh_LoadAdminPage("$page/content");
+if ( $sh['admin_loggedin'] ){
+    if($page == "auth"){
+        header("Location: " . Sh_Link("admincpanel"));
+        exit();
+    }elseif ($page == "logout"){
+        logOutAdmin();
+        header("Location: " . Sh_Link("admincpanel/auth"));
+        exit();
+    }else{
+        $pageAuthLoad = $page;
+    }
+}else{
+    if ($page == "auth"){
+        $pageAuthLoad = "auth";
+    }else{
+        header("Location: " . Sh_Link("admincpanel/auth"));
+        exit();
+    }
+
+}
+
+if (in_array($pageAuthLoad, $pages)) {
+    $page_loaded = Sh_LoadAdminPage("$pageAuthLoad/content");
 }
 if (empty($page_loaded)) {
     header("Location: " . Sh_Link('admin-cpanel'));
     exit();
 }
+
+
 
 ?>
 
@@ -54,7 +71,7 @@ if (empty($page_loaded)) {
     <meta property="og:title" content="">
     <meta property="og:type" content="">
     <meta property="og:url" content="">
-    <meta property="og:image" content="">
+    <meta property="og:image" content="<?= $sh['config']['site_url'].'/'.$sh['config']['site_logo'] ?>">
 
     <!--  Restrict Google from crawling this page for search engine  -->
     <meta name="robots" content="noindex">
@@ -77,13 +94,17 @@ if (empty($page_loaded)) {
     <!-- inject:css -->
     <link rel="stylesheet" href="<?= Sh_LoadAdminLink('assets/css/style.css') ?>">
     <!-- endinject -->
-    <link rel="shortcut icon" href="<?= Sh_LoadAdminLink('assets/images/favicon.png') ?>" />
+    <link rel="shortcut icon" href="<?= $sh['config']['site_url'].'/'.$sh['config']['site_logo'] ?>" />
 
     <link href="<?= Sh_LoadAdminLink('plugins/notification/snackbar/snackbar.min.css') ?>" rel="stylesheet" type="text/css" />
     <script src="<?= Sh_LoadAdminLink('plugins/notification/snackbar/snackbar.min.js') ?>"></script>
 
     <link href="<?= Sh_LoadAdminLink('assets/css/waitMe.css') ?>" rel="stylesheet" />
     <script src="<?= Sh_LoadAdminLink('assets/js/waitMe.js') ?>"></script>
+
+    <script src="<?= Sh_LoadAdminLink('plugins/sweetalerts/sweetalert2.min.js') ?>"></script>
+    <link href="<?= Sh_LoadAdminLink('plugins/sweetalerts/sweetalert2.min.css') ?>" rel="stylesheet" type="text/css" />
+    <link href="<?= Sh_LoadAdminLink('plugins/sweetalerts/sweetalert.css') ?>" rel="stylesheet" type="text/css" />
 
     <!--  Form Validation cdn  -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/parsley.js/2.1.2/parsley.min.js"></script>
@@ -93,6 +114,44 @@ if (empty($page_loaded)) {
       <!--  DropZone Cdn  -->
       <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
       <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+
+      <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
+      <?php if ($page == 'settings' ) { ?>
+          <link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet" />
+          <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet" />
+
+          <link href="https://unpkg.com/filepond-plugin-file-poster/dist/filepond-plugin-file-poster.css" rel="stylesheet" />
+
+          <link href="https://unpkg.com/filepond-plugin-image-edit/dist/filepond-plugin-image-edit.css" rel="stylesheet" />
+
+          <!-- include FilePond library -->
+          <script src="https://unpkg.com/filepond/dist/filepond.min.js"></script>
+
+          <script src="https://unpkg.com/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.min.js"></script>
+
+          <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.min.js"></script>
+
+          <script src="https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.min.js"></script>
+
+          <script src="https://unpkg.com/filepond-plugin-image-crop/dist/filepond-plugin-image-crop.min.js"></script>
+
+          <script src="https://unpkg.com/filepond-plugin-image-resize/dist/filepond-plugin-image-resize.min.js"></script>
+
+          <script src="https://unpkg.com/filepond-plugin-image-transform/dist/filepond-plugin-image-transform.min.js"></script>
+
+          <script src="https://unpkg.com/filepond-plugin-file-poster/dist/filepond-plugin-file-poster.js"></script>
+
+          <!-- include FilePond plugins -->
+          <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js"></script>
+
+          <script src="https://unpkg.com/filepond-plugin-image-edit/dist/filepond-plugin-image-edit.js"></script>
+
+          <!-- include FilePond jQuery adapter -->
+          <script src="https://unpkg.com/jquery-filepond/filepond.jquery.js"></script>
+
+      <?php } ?>
+
+
 
     <script>
       function Sh_Ajax_Requests_File(){
@@ -106,6 +165,7 @@ if (empty($page_loaded)) {
     <div class="px-5 container-scroller">
 				
 		<!-- partial:partials/_horizontal-navbar.html -->
+   <?php  if($sh['admin_loggedin']){ ?>
     <div class="horizontal-menu">
       <nav class="navbar top-navbar col-lg-12 col-12 p-0">
         <div class="container-fluid">
@@ -114,156 +174,26 @@ if (empty($page_loaded)) {
               <li class="nav-item ms-0 me-5 d-lg-flex d-none">
                 <a href="#" class="nav-link horizontal-nav-left-menu"><i class="mdi mdi-format-list-bulleted"></i></a>
               </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
-                  <i class="mdi mdi-bell mx-0"></i>
-                  <span class="count bg-success">2</span>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
-                  <p class="mb-0 font-weight-normal float-left dropdown-header">Notifications</p>
-                  <a class="dropdown-item preview-item">
-                    <div class="preview-thumbnail">
-                        <div class="preview-icon bg-success">
-                          <i class="mdi mdi-information mx-0"></i>
-                        </div>
-                    </div>
-                    <div class="preview-item-content">
-                        <h6 class="preview-subject font-weight-normal">Application Error</h6>
-                        <p class="font-weight-light small-text mb-0 text-muted">
-                          Just now
-                        </p>
-                    </div>
-                  </a>
-                  <a class="dropdown-item preview-item">
-                    <div class="preview-thumbnail">
-                        <div class="preview-icon bg-warning">
-                          <i class="mdi mdi-settings mx-0"></i>
-                        </div>
-                    </div>
-                    <div class="preview-item-content">
-                        <h6 class="preview-subject font-weight-normal">Settings</h6>
-                        <p class="font-weight-light small-text mb-0 text-muted">
-                          Private message
-                        </p>
-                    </div>
-                  </a>
-                  <a class="dropdown-item preview-item">
-                    <div class="preview-thumbnail">
-                        <div class="preview-icon bg-info">
-                          <i class="mdi mdi-account-box mx-0"></i>
-                        </div>
-                    </div>
-                    <div class="preview-item-content">
-                        <h6 class="preview-subject font-weight-normal">New user registration</h6>
-                        <p class="font-weight-light small-text mb-0 text-muted">
-                          2 days ago
-                        </p>
-                    </div>
-                  </a>
-                </div>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link count-indicator dropdown-toggle d-flex justify-content-center align-items-center" id="messageDropdown" href="#" data-bs-toggle="dropdown">
-                  <i class="mdi mdi-email mx-0"></i>
-                  <span class="count bg-primary">4</span>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="messageDropdown">
-                  <p class="mb-0 font-weight-normal float-left dropdown-header">Messages</p>
-                  <a class="dropdown-item preview-item">
-                    <div class="preview-thumbnail">
-                        <img src="images/faces/face4.jpg" alt="image" class="profile-pic">
-                    </div>
-                    <div class="preview-item-content flex-grow">
-                        <h6 class="preview-subject ellipsis font-weight-normal">David Grey
-                        </h6>
-                        <p class="font-weight-light small-text text-muted mb-0">
-                          The meeting is cancelled
-                        </p>
-                    </div>
-                  </a>
-                  <a class="dropdown-item preview-item">
-                    <div class="preview-thumbnail">
-                        <img src="images/faces/face2.jpg" alt="image" class="profile-pic">
-                    </div>
-                    <div class="preview-item-content flex-grow">
-                        <h6 class="preview-subject ellipsis font-weight-normal">Tim Cook
-                        </h6>
-                        <p class="font-weight-light small-text text-muted mb-0">
-                          New product launch
-                        </p>
-                    </div>
-                  </a>
-                  <a class="dropdown-item preview-item">
-                    <div class="preview-thumbnail">
-                        <img src="images/faces/face3.jpg" alt="image" class="profile-pic">
-                    </div>
-                    <div class="preview-item-content flex-grow">
-                        <h6 class="preview-subject ellipsis font-weight-normal"> Johnson
-                        </h6>
-                        <p class="font-weight-light small-text text-muted mb-0">
-                          Upcoming board meeting
-                        </p>
-                    </div>
-                  </a>
-                </div>
-              </li>
-              <li class="nav-item dropdown">
-                <a href="#" class="nav-link count-indicator "><i class="mdi mdi-message-reply-text"></i></a>
-              </li>
-              <li class="nav-item nav-search d-none d-lg-block ms-3">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="search">
-                        <i class="mdi mdi-magnify"></i>
-                      </span>
-                    </div>
-                    <input type="text" class="form-control" placeholder="search" aria-label="search" aria-describedby="search">
-                </div>
-              </li>	
             </ul>
             <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-                <a class="navbar-brand brand-logo" href="index.html"><img src="<?= Sh_LoadAdminLink('assets/images/logo.svg') ?>" alt="logo"/></a>
-                <a class="navbar-brand brand-logo-mini" href="index.html"><img src="<?= Sh_LoadAdminLink('images/logo-mini.svg') ?>" alt="logo"/></a>
+                <a class="navbar-brand brand-logo" href="<?= $sh['site_url']  ?>"><img src="<?= $sh['config']['site_url'].'/'.$sh['config']['site_logo'] ?>" alt="logo"/></a>
+                <a class="navbar-brand brand-logo-mini" href="<?= $sh['site_url']  ?>"><img src="<?= $sh['config']['site_url'].'/'.$sh['config']['site_logo'] ?>" alt="logo"/></a>
             </div>
             <ul class="navbar-nav navbar-nav-right">
-                <li class="nav-item dropdown  d-lg-flex d-none">
-                  <button type="button" class="btn btn-inverse-primary btn-sm">Product </button>
-                </li>
-                <li class="nav-item dropdown d-lg-flex d-none">
-                  <a class="dropdown-toggle show-dropdown-arrow btn btn-inverse-primary btn-sm" id="nreportDropdown" href="#" data-bs-toggle="dropdown">
-                  Reports
-                  </a>
-                  <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="nreportDropdown">
-                      <p class="mb-0 font-weight-medium float-left dropdown-header">Reports</p>
-                      <a class="dropdown-item">
-                        <i class="mdi mdi-file-pdf text-primary"></i>
-                        Pdf
-                      </a>
-                      <a class="dropdown-item">
-                        <i class="mdi mdi-file-excel text-primary"></i>
-                        Exel
-                      </a>
-                  </div>
-                </li>
-                <li class="nav-item dropdown d-lg-flex d-none">
-                  <button type="button" class="btn btn-inverse-primary btn-sm">Settings</button>
-                </li>
+
                 <li class="nav-item nav-profile dropdown">
                   <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" id="profileDropdown">
-                    <span class="nav-profile-name">Johnson</span>
+                    <span class="nav-profile-name"><?= $sh['admin']['name'] ?></span>
                     <span class="online-status"></span>
-                    <img src="<?= Sh_LoadAdminLink('assets/images/faces/face28.png') ?>" alt="profile"/>
+                    <img src="<?= $sh['config']['site_url'].'/'.$sh['config']['site_logo'] ?>" alt="profile"/>
                   </a>
-                  <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-                      <a class="dropdown-item">
-                        <i class="mdi mdi-settings text-primary"></i>
-                        Settings
-                      </a>
-                      <a class="dropdown-item">
+                  
+                </li>
+                <li class="nav-item nav-profile dropdown">
+                    <a href="<?= $sh['site_url'].'/admincpanel/logout'  ?>" class="dropdown-item">
                         <i class="mdi mdi-logout text-primary"></i>
                         Logout
-                      </a>
-                  </div>
+                    </a>
                 </li>
             </ul>
             <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="horizontal-menu-toggle">
@@ -272,81 +202,73 @@ if (empty($page_loaded)) {
           </div>
         </div>
       </nav>
+
+
       <nav class="bottom-navbar">
         <div class="container">
             <ul class="nav page-navigation">
               <li class="nav-item">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link" href="<?= $sh['site_url'].'/admincpanel'  ?>">
                   <i class="mdi mdi-file-document-box menu-icon"></i>
                   <span class="menu-title">Dashboard</span>
                 </a>
               </li>
               <li class="nav-item">
                   <a href="#" class="nav-link">
-                    <i class="mdi mdi-cube-outline menu-icon"></i>
-                    <span class="menu-title">UI Elements</span>
+                    <i class="mdi mdi-account menu-icon"></i>
+                    <span class="menu-title">Users</span>
                     <i class="menu-arrow"></i>
                   </a>
                   <div class="submenu">
                       <ul>
-                          <li class="nav-item"><a class="nav-link" href="pages/ui-features/buttons.html">Buttons</a></li>
-                          <li class="nav-item"><a class="nav-link" href="pages/ui-features/typography.html">Typography</a></li>
+                          <li class="nav-item"><a class="nav-link" href="<?= $sh['site_url'].'/admincpanel/manage-user'  ?>">Manage Users</a></li>
+                          <li class="nav-item"><a class="nav-link" href="<?= $sh['site_url'].'/admincpanel/create-user'  ?>">Create User</a></li>
                       </ul>
                   </div>
               </li>
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="mdi mdi-account menu-icon"></i>
+                        <span class="menu-title">Admin</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="submenu">
+                        <ul>
+                            <li class="nav-item"><a class="nav-link" href="<?= $sh['site_url'].'/admincpanel/manage-admin'  ?>">Manage Admins</a></li>
+                            <li class="nav-item"><a class="nav-link" href="<?= $sh['site_url'].'/admincpanel/make-admins'  ?>">Create Admin</a></li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                    <a href="<?= $sh['site_url'].'/admincpanel/create-position'  ?>" class="nav-link">
+                        <i class="mdi mdi-bookmark-check menu-icon"></i>
+                        <span class="menu-title">Positions</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                </li>
+
               <li class="nav-item">
-                  <a href="pages/forms/basic_elements.html" class="nav-link">
-                    <i class="mdi mdi-chart-areaspline menu-icon"></i>
-                    <span class="menu-title">Form Elements</span>
+                  <a href="<?= $sh['site_url'].'/admincpanel/vote-record'  ?>" class="nav-link">
+                    <i class="mdi mdi-bookmark-check menu-icon"></i>
+                    <span class="menu-title">Vote Records</span>
                     <i class="menu-arrow"></i>
                   </a>
               </li>
               <li class="nav-item">
-                  <a href="pages/charts/chartjs.html" class="nav-link">
-                    <i class="mdi mdi-finance menu-icon"></i>
-                    <span class="menu-title">Charts</span>
+                  <a href="<?= $sh['site_url'].'/admincpanel/settings'  ?>" class="nav-link">
+                    <i class="mdi mdi-settings menu-icon"></i>
+                    <span class="menu-title">Settings</span>
                     <i class="menu-arrow"></i>
                   </a>
-              </li>
-              <li class="nav-item">
-                  <a href="pages/tables/basic-table.html" class="nav-link">
-                    <i class="mdi mdi-grid menu-icon"></i>
-                    <span class="menu-title">Tables</span>
-                    <i class="menu-arrow"></i>
-                  </a>
-              </li>
-              <li class="nav-item">
-                  <a href="pages/icons/mdi.html" class="nav-link">
-                    <i class="mdi mdi-emoticon menu-icon"></i>
-                    <span class="menu-title">Icons</span>
-                    <i class="menu-arrow"></i>
-                  </a>
-              </li>
-              <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="mdi mdi-codepen menu-icon"></i>
-                    <span class="menu-title">Sample Pages</span>
-                    <i class="menu-arrow"></i>
-                  </a>
-                  <div class="submenu">
-                      <ul class="submenu-item">
-                          <li class="nav-item"><a class="nav-link" href="pages/samples/login.html">Login</a></li>
-                          <li class="nav-item"><a class="nav-link" href="pages/samples/login-2.html">Login 2</a></li>
-                          <li class="nav-item"><a class="nav-link" href="pages/samples/register.html">Register</a></li>
-                          <li class="nav-item"><a class="nav-link" href="pages/samples/register-2.html">Register 2</a></li>
-                          <li class="nav-item"><a class="nav-link" href="pages/samples/lock-screen.html">Lockscreen</a></li>
-                      </ul>
-                  </div>
-              </li>
-              <li class="nav-item">
-                  <a href="docs/documentation.html" class="nav-link">
-                    <i class="mdi mdi-file-document-box-outline menu-icon"></i>
-                    <span class="menu-title">Documentation</span></a>
               </li>
             </ul>
         </div>
       </nav>
     </div>
+  <?php } ?>
+
     <!-- partial -->
 		<div class="container-fluid page-body-wrapper">
 			<div class="main-panel">
@@ -355,18 +277,16 @@ if (empty($page_loaded)) {
 				<!-- content-wrapper ends -->
 		
                 <!-- partial:partials/_footer.html -->
-	   
-       
-       
-       
+
+        <?php  if($sh['admin_loggedin']){ ?>
         <footer class="footer">
           <div class="footer-wrap">
             <div class="d-sm-flex justify-content-center justify-content-sm-between">
-              <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © <a href="https://www.bootstrapdash.com/" target="_blank">bootstrapdash.com </a>2021</span>
-              <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Only the best <a href="https://www.bootstrapdash.com/" target="_blank"> Bootstrap dashboard </a> templates</span>
+              <span class="text-muted text-center text-sm-left d-block d-sm-inline-block"> <?= $sh['config']['site_footer'] ?> </span>
             </div>
           </div>
         </footer>
+        <?php } ?>
 				<!-- partial -->
 			</div>
 			<!-- main-panel ends -->

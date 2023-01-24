@@ -37,7 +37,7 @@ if ($f == "account"){
                 'middle_name' => $middle_name,
                 'username' => $matric_no,
                 'phone_number' => $phoneNumber,
-                'password' => $last_name,
+                'password' => password_hash($last_name, PASSWORD_DEFAULT),
                 'level' => $level,
                 'active' => $accountAccess,
                 'email' => '',
@@ -256,11 +256,11 @@ if ($f == "account"){
                         <td><?= $aus['level'] ?></td>
                         <td><?= ($aus['vote_status'] == 1) ? '<p class="badge badge-success">Voted</p>' : '<p class="badge badge-success">Not Yet</p>' ?></td>
                         <td>
-                            <a href="">
+                            <a href="<?= Sh_Link('admin-cpanel/make-candidate?user_id='. $aus['user_id']) ?>">
                                 <i class="mdi mdi-settings text-primary"></i>
                             </a>
                             &nbsp; &nbsp;
-                            <a href="<?= Sh_Link('admin-cpanel/edit-users?user_id='. $aus['user_id']) ?>=">
+                            <a href="<?= Sh_Link('admin-cpanel/edit-users?user_id='. $aus['user_id']) ?>">
                             <i class="mdi mdi-grease-pencil text-primary"></i>
                             </a>
                         </td>
@@ -341,12 +341,12 @@ if ($f == "account"){
 
                 if ($user_id > 0){
                     $data = array(
-                        'data' => 200,
-                        'message' => "Successfully done"
+                        'status' => 200,
+                        'message' => "User Created Successfully"
                     );
                 }else{
                     $data = array(
-                        'data' => 400,
+                        'status' => 400,
                         'message' => "Error While Processing your Request"
                     );
                 }
@@ -363,4 +363,135 @@ if ($f == "account"){
         exit();
 
     }
+
+
+    if ($s == "vote_candi"){
+
+        if ($sh['user']['user_id']){
+
+            $user_id = Sh_Secure($sh['user']['user_id']);
+            $position_id = Sh_Secure($_GET['post_id']);
+            $candidate_id = Sh_Secure($_GET['cand_id']);
+
+            $voteData = [
+                'voter_id' => $user_id,
+                'candidate_id' => $candidate_id,
+                'post_id' => $position_id,
+                'ip_address' => get_ip_address(),
+                'status' => 1
+            ];
+
+            // check if voter has voted for that position already
+            $vData = [
+                'voter_id' => $user_id,
+                'post_id' => $position_id,
+            ];
+
+            if (getVoterStatusByPV($vData)){
+                $data = array(
+                    'status' => 200,
+                    'message' => "Thanks you have already voted for this Position"
+                );
+
+            }else{
+
+                createVoteRecord($voteData);
+                $data = array(
+                    'status' => 200,
+                    'message' => "You have successfully voted "
+                );
+            }
+
+        }else{
+            $data = array(
+                'status' => 401,
+                'message' => "Authentication Error"
+            );
+        }
+
+
+
+        header("Content-type: application/json");
+        echo json_encode($data);
+        exit();
+
+    }
+
+
+    if ($s == "make-user-candidate"){
+
+        $user_id = Sh_Secure($_POST['user_id']);
+        $position_id = Sh_Secure($_POST['post_id']);
+
+        // get all the data to be submitted
+        $allData = array(
+            'user_id' => $user_id,
+            'post_id' => $position_id,
+        );
+
+
+        //save candidate data if not found
+        if(isset($_POST['cand_id'])){
+            $cand_id = Sh_Secure($_POST['cand_id']);
+
+            // update candidate data
+            $allData['status'] = Sh_Secure($_POST['status']);
+            UpdateCandidateData($allData, $cand_id);
+            $data = array(
+                'status' => 200,
+                'message' => "Candidate data successfully updated",
+            );
+        }else{
+            $cand_id = createCandidate($allData);
+            $data = array(
+                'status' => 200,
+                'cand_id' => $cand_id,
+                'message' => "Candidate data successfully created",
+            );
+        }
+
+
+        header("Content-type: application/json");
+        echo json_encode($data);
+        exit();
+
+    }
+
+
+    if ($s == "delete_candidate"){
+        $cand_id = Sh_Secure($_GET['cand_id']);
+
+        $error = 0;
+        if (empty($cand_id)){
+            $error  = 1;
+            $data = array(
+                'status' => 400,
+                'message' => "Candidate id not found",
+            );
+        }
+
+
+        if($error == 0){
+            // delete candidate
+            if(DeleteCandidateData($cand_id)){
+                $data = array(
+                    'status' => 200,
+                    'message' => "Candidate ".$sh['lang']['general_delete_success_message'],
+                );
+            }else{
+                $data = array(
+                    'status' => 400,
+                    'message' => $sh['lang']['general_error_message'],
+                );
+            }
+
+        }
+
+        header("Content-type: application/json");
+        echo json_encode($data);
+        exit();
+
+    }
+
+
 }

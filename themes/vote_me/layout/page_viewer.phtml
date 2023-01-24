@@ -7,13 +7,13 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="author" content="Surecoders">
-    <meta name="title" content="<?= $sh['title'] ?>">
+    <meta name="title" content="<?= $sh['title'] ?>"> 
     <meta name="keywords" content="<?= $sh['keywords'] ?>">
     <meta name="description" content="<?= $sh['description'] ?>">
     <title><?= $sh['title'] ?></title>
     
      <!-- Favicon -->
-     <link rel="shortcut icon" type="image/x-icon" href="<?= $sh['config']['site_url'].'/'.$sh['config']['partner1_image'] ?>">
+     <link rel="shortcut icon" type="image/x-icon" href="<?= $sh['config']['site_url'].'/'.$sh['config']['site_logo'] ?>">
 
     <?php if ($sh['page'] == 'maintenance') { ?>
         <meta name="robots" content="noindex">
@@ -23,20 +23,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="<?php echo $sh['config']['theme_assets_url'];?>/css/style.css">
 
-    <?php if ($sh['page'] == 'page' && !empty($sh['page_d'])) { ?>
-        <meta property="og:title" content="<?php echo $sh['page_d']['page_name']; ?>" />
-        <meta property="og:type" content="article" />
-        <meta property="og:url" content="<?php echo Sh_Link($sh['page_d']['page_slug']); ?>" />
-        <meta property="og:image" content="<?= Sh_Link('upload/pages/'.$sh['page_d']['pageImg']) ?>" />
-        <meta property="og:image:secure_url" content="<?= Sh_Link('upload/pages/'.$sh['page_d']['pageImg']) ?>" />
-        <meta property="og:description" content="<?php echo limit_text($sh['page_d']['page_description'], 20); ?>" />
-        <meta name="twitter:card" content="summary">
-        <meta name="twitter:title" content="<?php echo $sh['page_d']['page_name']; ?>" />
-        <meta name="twitter:description" content="<?php echo limit_text($sh['page_d']['page_description'], 20); ?>" />
-        <meta name="twitter:image" content="<?= Sh_Link('upload/pages/'.$sh['page_d']['pageImg']) ?>" />
-    <?php } ?>
-
-    <?php if ($sh['page'] == 'welcome') { ?>
+    <?php if ($sh['page'] == 'welcome'|| $sh['page'] == 'vote') { ?>
         <meta property="og:title" content="<?php echo $sh['title'];?>" />
         <meta property="og:type" content="article" />
         <meta property="og:url" content="<?php echo $sh['config']['site_url'];?>" />
@@ -82,7 +69,7 @@
         <!-- Navigation -->
         <div class="nav section">
             <div class="logo">
-                <img src="<?= $sh['config']['site_url'] ?>/uploads/others/no-bg-logo.png" alt="">
+                <img src="<?= $sh['config']['site_url'].'/'.$sh['config']['site_logo'] ?>" alt="">
             </div>
             <input name="" type="checkbox"  id="">
             <div class="humbuger">
@@ -93,17 +80,17 @@
             <div class="menu">
                 <ul class="menu-list">
                     <li>
-                        <a href="#" class="active">Home</a>
+                        <a href="<?= $sh['config']['site_url'] ?>" class="active">Home</a>
                     </li>
                     <li>
-                        <a href="" class="active">About Us</a>
+                        <a href="<?= $sh['config']['site_url'] ?>" class="active">About Us</a>
                     </li>
                     <li>
-                        <a href="" class="active">View Candidates</a>
+                        <a href="<?= $sh['config']['site_url'] ?>" class="active">View Candidates</a>
                     </li>
                     
                     <li>
-                        <a href="" class="active">Vote</a>
+                        <a href="<?= $sh['config']['site_url'].'/vote' ?>" class="active">Vote</a>
                     </li>
 
                     <?php 
@@ -128,7 +115,7 @@
                         </li>
                     <?php }else{ ?>
                         <li>
-                            <a href="" class="active">
+                            <a href="<?= Sh_Link('login') ?>" class="active">
                                 Login <i class="fa-solid fa-right-to-bracket"></i> 
                             </a>
                         </li>
@@ -144,7 +131,7 @@
         <!-- Footer -->
         <div class="footer section">
             <div class="footer-one">
-                <p>Momudu University copyright 2022</p>
+                <p><?= $sh['config']['site_footer'] ?></p>
             </div>
         </div>
     </div>

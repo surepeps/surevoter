@@ -142,6 +142,22 @@ if (Sh_IsLogged() == true) {
     $sh['loggedin'] = true;
 }
 
+
+// LoggediN checker
+$sh['admin_loggedin'] = false;
+
+if (Sh_IsAdminLogged() == true) {
+    $session_id         = (!empty($_SESSION['admin_id'])) ? $_SESSION['admin_id'] : $_COOKIE['admin_id'];
+    $sh['admin_session'] = Sh_GetUserFromSessionID($session_id);
+    $sh['admin'] = getSingleAdminData($sh['admin_session']);
+
+    if ($sh['admin']['admin_id'] < 0 || empty($sh['admin']['admin_id']) || !is_numeric($sh['admin']['admin_id'])) {
+        header("Location: " . Sh_Link("admincpanel/logout"));
+    }
+    $sh['admin_loggedin'] = true;
+}
+
+
 if (!empty($_GET['c_id']) && !empty($_GET['user_id'])) {
     $application = 'windows';
     if (!empty($_GET['application'])) {

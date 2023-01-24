@@ -1,0 +1,55 @@
+<?php
+
+// position data
+$allPosts = getPosts(10000,"`status` = 1 OR `status` = 0");
+?>
+
+
+
+<div class="content-wrapper">
+
+    <div class="row">
+
+        <?php foreach ($allPosts as $ps) {?>
+        <!-- Single Position Data -->
+        <div class="col-lg-6 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title"><b class="text-danger"> <?= $ps['title'] ?> </b> Vote Break Down</h4>
+                    <p class="card-description">
+                        All Candidate Contesting for <b class="text-danger"> <?= $ps['title'] ?> </b> analysis
+                    </p>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Candidate</th>
+                                <th>Vote Count</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php
+                                $getCands = getCandidates("all", $ps['post_id'], " `status` = 1 OR `status` = 0");
+                                foreach ($getCands as $cd) {
+                                    $candData = Sh_UserData($cd['user_id']);
+                            ?>
+                                <tr>
+                                    <td><b><?= $candData['name'] ?></b></td>
+                                    <td><?= getCounterRecords($cd['user_id'], 'vote', 'candidate_id') ?></td>
+                                    <td><?= ($cd['status'] == 1) ? '<label class="badge badge-success">Active</label>' : '<label class="badge badge-danger">In-Active</label>' ?></td>
+                                </tr>
+                            <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php } ?>
+
+
+
+
+    </div>
+</div>

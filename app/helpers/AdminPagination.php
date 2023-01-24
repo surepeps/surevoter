@@ -1,10 +1,4 @@
 <?php
-/**
- * data_structure
- * Created by SureCoder
- * FILE NAME: AdminPagination.php
- * YEAR: 2022
- */
 
 class AdminPagination
 {

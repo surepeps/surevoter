@@ -42,14 +42,16 @@ if ($f == 'login') {
             }
         } else if (Sh_UserInactive($_POST['username']) === true) {
             $errors[] = $error_icon . $sh['lang']['account_disbaled_contanct_admin_label'];
-        } else if (Sh_VerfiyIP($_POST['username']) === false) {
-            $_SESSION['code_id'] = Sh_UserIdForLogin($username);
-            $data_               = array(
-                'status' => 600,
-                'location' => Sh_Link('unusual-login')
-            );
-            $phone = 1;
-        } else if (Sh_UserActive($_POST['username']) === false) {
+        }
+//        else if (Sh_VerfiyIP($_POST['username']) === false) {
+//            $_SESSION['code_id'] = Sh_UserIdForLogin($username);
+//            $data_               = array(
+//                'status' => 600,
+//                'location' => Sh_Link('unusual-login')
+//            );
+//            $phone = 1;
+//        }
+        else if (Sh_UserActive($_POST['username']) === false) {
             $_SESSION['code_id'] = Sh_UserIdForLogin($username);
             $data_               = array(
                 'status' => 600,
